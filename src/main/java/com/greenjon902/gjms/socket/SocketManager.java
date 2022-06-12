@@ -54,7 +54,7 @@ public class SocketManager {
             while (!serverSocket.isClosed()) {
                 try {
                     Socket connection = serverSocket.accept();
-                    System.out.println("Incoming connection from " + connection.getInetAddress());
+                    System.out.println("Incoming connection from " + connection.getInetAddress() + ":" + connection.getPort());
 
                     InputStream inputStream = connection.getInputStream();
                     OutputStream outputStream = connection.getOutputStream();
