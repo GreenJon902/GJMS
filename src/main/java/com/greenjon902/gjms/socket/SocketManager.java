@@ -3,6 +3,9 @@ package com.greenjon902.gjms.socket;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+/**
+ * Distributes all incoming and outgoing connections
+ */
 public class SocketManager {
     private final int port;
     private final ServerSocket serverSocket;
@@ -17,6 +20,9 @@ public class SocketManager {
 
     }
 
+    /**
+     * Starts the thread that listens to incoming connections
+     */
     public void openSocket() {
 
     }
