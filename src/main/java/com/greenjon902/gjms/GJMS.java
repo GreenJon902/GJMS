@@ -7,7 +7,7 @@ public class GJMS {
         System.out.println("GJMS Starting...");
         System.out.println("Version is 1.0-SNAPSHOT");
 
-        SocketManager socketManager = new SocketManager(25565);
+        SocketManager socketManager = new SocketManager(25564);
         socketManager.openSocket();
     }
 }
