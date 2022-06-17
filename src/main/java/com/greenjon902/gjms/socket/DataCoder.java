@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DataTypes {
+/**
+ * A utility class to encode and decode various data types that are sent to and from the Minecraft Client.
+ */
+public class DataCoder {
     private static final int SEGMENT_BITS = 0x7F; // 11111110
     private static final int CONTINUE_BIT = 0x80; // 10000000
 
