@@ -2,11 +2,9 @@ package com.greenjon902.gjms.socket;
 
 import com.greenjon902.gjms.socket.packetHandler.PreLoginPacketHandler;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /**
  * Distributes all incoming and outgoing connections
