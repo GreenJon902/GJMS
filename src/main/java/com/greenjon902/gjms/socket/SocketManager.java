@@ -1,5 +1,7 @@
 package com.greenjon902.gjms.socket;
 
+import com.greenjon902.gjms.socket.packetHandler.PreLoginPacketHandler;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,7 +35,8 @@ public class SocketManager {
                     Socket connection = serverSocket.accept();
                     System.out.println("Incoming connection from " + connection.getInetAddress() + ":" + connection.getPort());
 
-
+                    PlayerConnection playerConnection = new PlayerConnection(connection);
+                    PreLoginPacketHandler.processInitialConnection(playerConnection);
 
                 } catch (Exception e) {
                     System.out.println("Failed to accept incoming connection - " + e.getMessage());
