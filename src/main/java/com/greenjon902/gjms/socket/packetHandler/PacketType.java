@@ -30,7 +30,7 @@ public enum PacketType {
      * @param id The id of the packet type
      * @return The type of packet that <code>Id</code> represents
      */
-    public PacketType fromId(int id) {
+    public static PacketType fromId(int id) {
         return idToPacketType[id];
     }
 }
