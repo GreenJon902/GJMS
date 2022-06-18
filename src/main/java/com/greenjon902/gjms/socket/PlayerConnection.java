@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+/**
+ * A container class to store everything to do with the player's connection, it means other modules of GJMS don't have
+ * to use a socket.
+ */
 public class PlayerConnection {
     private final Socket socket;
     public final InputStream inputStream;
