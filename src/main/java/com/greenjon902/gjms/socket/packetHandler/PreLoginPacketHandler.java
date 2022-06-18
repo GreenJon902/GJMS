@@ -11,8 +11,14 @@ import java.io.IOException;
  */
 public class PreLoginPacketHandler {
 
+    /**
+     * Process the first connection that is made after the client connects to the server. Will throw an error if the
+     * packet id is not 0x00.
+     * @param connection The connection to read the packets from
+     * @throws IOException If an I/O error occurs
+     */
     public static void processInitialConnection(PlayerConnection connection) throws IOException {
-        int packetLength = DataCoder.decodeFirstVarInt(connection);
+        int packetLength = DataCoder.decodeFirstVarInt(connection); // We do not need this
         int packetId = DataCoder.decodeFirstVarInt(connection);
     }
 }
