@@ -30,6 +30,7 @@ public class PreLoginPacketHandler {
 
         // Packet should now have the fields [ProtocolVersion(VarInt)][ServerAddress(String255)][ServerPort(UnsignedShort)][NextState(VarInt)]
         int protocolVersion = DataCoder.decodeFirstVarInt(connection);
+        System.out.println("Protocol Version of " + connection.ip + " is " + protocolVersion);
         String serverAddress = DataCoder.decodeFirstString(connection);
         int port = DataCoder.decodeFirstUnsignedShort(connection);
     }

@@ -13,10 +13,13 @@ public class PlayerConnection {
     private final Socket socket;
     public final InputStream inputStream;
     public final OutputStream outputStream;
+    public final String ip;
 
     public PlayerConnection(Socket socket) throws IOException {
         this.socket = socket;
         inputStream = socket.getInputStream();
         outputStream = socket.getOutputStream();
+
+        ip =  socket.getInetAddress() + ":" + socket.getPort();
     }
 }
