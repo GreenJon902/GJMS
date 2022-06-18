@@ -46,7 +46,6 @@ public class DataCoder {
      */
     public static String decodeFirstString(PlayerConnection connection) throws IOException {
         int length = decodeFirstVarInt(connection);
-        System.out.println(length);
         byte[] bytes = new byte[length];
         connection.inputStream.read(bytes);
 
