@@ -15,7 +15,7 @@ public class DataCoder {
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
      * VarInts can store up to 5 bits of data.
      *
-     * @param connection The connection where the packet is coming from.
+     * @param connection The connection where the packet is coming from
      * @return The integer that was created
      * @throws IOException If an I/O error occurs
      */

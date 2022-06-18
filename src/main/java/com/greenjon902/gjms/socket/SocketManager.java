@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Distributes all incoming and outgoing connections
+ * Distributes all incoming and outgoing connections.
  */
 public class SocketManager {
     private final int port;
@@ -24,7 +24,7 @@ public class SocketManager {
     }
 
     /**
-     * Starts the thread that listens to incoming connections
+     * Starts the thread that listens to incoming connections.
      */
     public void openSocket() {
         new Thread(() -> {
