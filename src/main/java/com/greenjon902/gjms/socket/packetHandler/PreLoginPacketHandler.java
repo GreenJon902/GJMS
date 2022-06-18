@@ -18,13 +18,20 @@ public class PreLoginPacketHandler {
      * @throws IOException If an I/O error occurs
      */
     public static void processInitialConnection(PlayerConnection connection) throws IOException {
+
+
         int packetLength = DataCoder.decodeFirstVarInt(connection); // We do not need this
         int packetId = DataCoder.decodeFirstVarInt(connection);
         PacketType packetType = PacketType.fromId(packetId);
 
-        if (packetType != PacketType.HANDSHAKE) {
-            throw new WrongInitialPacketException("Recieved packet of type " + packetType);
+        if (packetType != PacketType.HANDSHAKE) { // First connection packet should only be HANDSHAKE
+            throw new WrongInitialPacketException("Received packet of type " + packetType);
         }
+
+        // Packet should now have the fields [ProtocolVersion(VarInt)][ServerAddress(String255)][ServerPort(UnsignedShort)][NextState(VarInt)]
+        int protocolVersion = DataCoder.decodeFirstVarInt(connection);
+        String serverAddress = DataCoder.decodeFirstString(connection);
+        int port = DataCoder.decodeFirstUnsignedShort(connection);
     }
 
     public static class WrongInitialPacketException extends RuntimeException {

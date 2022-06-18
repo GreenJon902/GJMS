@@ -46,10 +46,17 @@ public class DataCoder {
      */
     public static String decodeFirstString(PlayerConnection connection) throws IOException {
         int length = decodeFirstVarInt(connection);
-
+        System.out.println(length);
         byte[] bytes = new byte[length];
         connection.inputStream.read(bytes);
 
         return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static int decodeFirstUnsignedShort(PlayerConnection connection) throws IOException {
+        int value = 0;
+        value += connection.inputStream.read() << 8;
+        value += connection.inputStream.read();
+        return value;
     }
 }
