@@ -20,5 +20,16 @@ public class PreLoginPacketHandler {
     public static void processInitialConnection(PlayerConnection connection) throws IOException {
         int packetLength = DataCoder.decodeFirstVarInt(connection); // We do not need this
         int packetId = DataCoder.decodeFirstVarInt(connection);
+        PacketType packetType = PacketType.fromId(packetId);
+
+        if (packetType != PacketType.HANDSHAKE) {
+            throw new WrongInitialPacketException("Recieved packet of type " + packetType);
+        }
+    }
+
+    public static class WrongInitialPacketException extends RuntimeException {
+        public WrongInitialPacketException(String message) {
+            super(message);
+        }
     }
 }
