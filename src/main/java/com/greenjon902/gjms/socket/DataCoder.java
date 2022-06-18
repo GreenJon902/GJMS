@@ -16,7 +16,7 @@ public class DataCoder {
      * VarInts can store up to 5 bits of data.
      *
      * @param connection The connection where the packet is coming from
-     * @return The integer that was created
+     * @return The integer that was decoded
      * @throws IOException If an I/O error occurs
      */
     public static int decodeFirstVarInt(PlayerConnection connection) throws IOException {
