@@ -1,6 +1,7 @@
 package com.greenjon902.gjms.socket;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A utility class to encode and decode various data types that are sent to and from the Minecraft Client.
@@ -33,5 +34,22 @@ public class DataCoder {
         }
 
         return value;
+    }
+
+    /**
+     * Reads the first string from the players incoming packets.
+     * Strings are transmitted in UTF-8 and are prefixed by a varInt (see {@link #decodeFirstVarInt(PlayerConnection)}).
+     *
+     * @param connection The connection where the packet is coming from
+     * @return The string that was decoded
+     * @throws IOException If an I/O error occurs
+     */
+    public static String decodeFirstString(PlayerConnection connection) throws IOException {
+        int length = decodeFirstVarInt(connection);
+
+        byte[] bytes = new byte[length];
+        connection.inputStream.read(bytes);
+
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
