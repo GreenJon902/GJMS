@@ -1,6 +1,8 @@
 package com.greenjon902.gjms.connection.packetAdapter;
 
 import com.greenjon902.gjms.connection.PlayerConnection;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +26,7 @@ public abstract class PacketAdapter {
      * @return The integer that was decoded
      * @throws IOException If an I/O error occurs
      */
-    public static int decodeFirstVarInt(PlayerConnection connection) throws IOException {
+    public static int decodeFirstVarInt(@NotNull PlayerConnection connection) throws IOException {
         int value = 0; // The number that is being decoded
         int position = 0; // The position of value that is currently being edited
 
@@ -48,7 +50,8 @@ public abstract class PacketAdapter {
      * @return The string that was decoded
      * @throws IOException If an I/O error occurs
      */
-    public static String decodeFirstString(PlayerConnection connection) throws IOException {
+    @Contract("_ -> new")
+    public static @NotNull String decodeFirstString(@NotNull PlayerConnection connection) throws IOException {
         int length = decodeFirstVarInt(connection);
         byte[] bytes = new byte[length];
         connection.inputStream.read(bytes);
@@ -56,7 +59,7 @@ public abstract class PacketAdapter {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    public static int decodeFirstUnsignedShort(PlayerConnection connection) throws IOException {
+    public static int decodeFirstUnsignedShort(@NotNull PlayerConnection connection) throws IOException {
         int value = 0;
         value += connection.inputStream.read() << 8;
         value += connection.inputStream.read();
@@ -69,7 +72,7 @@ public abstract class PacketAdapter {
      *
      * @return The instance of the packet adapter
      */
-    public static PacketAdapter getInstance() {
+    public static @NotNull PacketAdapter getInstance() {
         throw new RuntimeException("getInstance has not been implemented yet");
     }
 }

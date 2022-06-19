@@ -2,6 +2,7 @@ package com.greenjon902.gjms.connection.packetAdapter;
 
 import com.greenjon902.gjms.connection.ConnectionState;
 import com.greenjon902.gjms.connection.PlayerConnection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Contains the functionality for converting packets when the client's {@link ConnectionState} is
@@ -16,7 +17,7 @@ public class HandshakePacketAdapter extends PacketAdapter {
      *
      * @return The instance of the packet adapter
      */
-    public static PacketAdapter getInstance(){
-        return new HandshakePacketAdapter();
+    public static @NotNull PacketAdapter getInstance(){
+        return instance;
     }
 }
