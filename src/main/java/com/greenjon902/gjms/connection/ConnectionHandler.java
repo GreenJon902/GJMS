@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Handles all currently open connections. It is given connections by the {@link NewConnectionHandler}.
  */
 public class ConnectionHandler {
-    private static final ArrayList<PlayerConnection> playerConnections = new ArrayList();
+    private static final ArrayList<PlayerConnection> playerConnections = new ArrayList<>();
 
     /**
      * Adds a connection that will need to be handled.
