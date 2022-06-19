@@ -12,8 +12,7 @@ public class HandshakePacketAdapter extends PacketAdapter {
     static final PacketAdapter instance = new HandshakePacketAdapter();
 
     /**
-     * Gets the usable instance of the {@link PacketAdapter}. Should be used to store in
-     * {@link PlayerConnection#packetAdapter}.
+     * Gets the usable instance of the {@link PacketAdapter}.
      *
      * @return The instance of the packet adapter
      */
