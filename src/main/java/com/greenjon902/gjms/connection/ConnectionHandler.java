@@ -1,5 +1,7 @@
 package com.greenjon902.gjms.connection;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ public class ConnectionHandler {
      *
      * @param playerConnection The player connection to be added
      */
-    public static void addConnection(PlayerConnection playerConnection) {
+    public static void addConnection(@NotNull PlayerConnection playerConnection) {
         playerConnections.add(playerConnection);
     }
 
@@ -45,7 +47,7 @@ public class ConnectionHandler {
      *
      * @param playerConnection The player connection where the packet is coming from
      */
-    private static void handleNextPacketFrom(PlayerConnection playerConnection) {
+    private static void handleNextPacketFrom(@NotNull PlayerConnection playerConnection) {
         switch (playerConnection.getConnectionState()) {  // TODO: Add other ConnectionStates
             case HANDSHAKE:
                 break;

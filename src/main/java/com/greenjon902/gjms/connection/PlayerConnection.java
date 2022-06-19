@@ -2,6 +2,7 @@ package com.greenjon902.gjms.connection;
 
 import com.greenjon902.gjms.connection.packetAdapter.HandshakePacketAdapter;
 import com.greenjon902.gjms.connection.packetAdapter.PacketAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +36,7 @@ public class PlayerConnection {
      *
      * @return The packet adapter
      */
-    public PacketAdapter getPacketAdapter() {
+    public @NotNull PacketAdapter getPacketAdapter() {
         return packetAdapter;
     }
 
@@ -44,7 +45,7 @@ public class PlayerConnection {
      *
      * @return The current connection state
      */
-    public ConnectionState getConnectionState() {
+    public @NotNull ConnectionState getConnectionState() {
         return connectionState;
     }
 }
