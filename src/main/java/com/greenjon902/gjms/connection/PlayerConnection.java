@@ -30,10 +30,20 @@ public class PlayerConnection {
         ip =  socket.getInetAddress() + ":" + socket.getPort();
     }
 
+    /**
+     * Gets this {@link PlayerConnection}'s {@link PacketAdapter}.
+     *
+     * @return The packet adapter
+     */
     public Class<? extends PacketAdapter> getPacketAdapter() {
         return packetAdapter;
     }
 
+    /**
+     * Gets this {@link PlayerConnection}'s {@link ConnectionState}.
+     *
+     * @return The current connection state
+     */
     public ConnectionState getConnectionState() {
         return connectionState;
     }
