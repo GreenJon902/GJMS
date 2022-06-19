@@ -10,6 +10,6 @@ public class GJMS {
 
         NewConnectionHandler socketManager = new NewConnectionHandler(25565);
         socketManager.start();
-        ConnectionHandler.startManager();
+        ConnectionHandler.startNewHandler();
     }
 }
