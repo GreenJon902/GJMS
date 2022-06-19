@@ -62,4 +62,14 @@ public abstract class PacketAdapter {
         value += connection.inputStream.read();
         return value;
     }
+
+    /**
+     * Gets the usable instance of the {@link PacketAdapter}. Should be used to store in
+     * {@link PlayerConnection#packetAdapter}.
+     *
+     * @return The instance of the packet adapter
+     */
+    public static PacketAdapter getInstance() {
+        throw new RuntimeException("getInstance has not been implemented yet");
+    }
 }

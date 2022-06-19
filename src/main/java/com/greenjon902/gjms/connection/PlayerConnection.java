@@ -15,7 +15,7 @@ import java.net.Socket;
 public class PlayerConnection {
     private final Socket socket;
 
-    private Class<? extends PacketAdapter> packetAdapter = HandshakePacketAdapter.class; // first packetAdapter
+    private PacketAdapter packetAdapter = HandshakePacketAdapter.getInstance(); // first packetAdapter
     private ConnectionState connectionState = ConnectionState.HANDSHAKE; // first packetAdapter
 
     public final InputStream inputStream;
@@ -35,7 +35,7 @@ public class PlayerConnection {
      *
      * @return The packet adapter
      */
-    public Class<? extends PacketAdapter> getPacketAdapter() {
+    public PacketAdapter getPacketAdapter() {
         return packetAdapter;
     }
 
