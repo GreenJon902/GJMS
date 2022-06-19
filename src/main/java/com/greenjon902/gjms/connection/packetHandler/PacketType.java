@@ -1,4 +1,4 @@
-package com.greenjon902.gjms.socket.packetHandler;
+package com.greenjon902.gjms.connection.packetHandler;
 
 /**
  * This stores PacketTypes as an {@link Enum}, rather than an {@link Integer}, this provides explicitness, so it cannot be

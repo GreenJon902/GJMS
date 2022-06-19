@@ -1,4 +1,4 @@
-package com.greenjon902.gjms.socket;
+package com.greenjon902.gjms.connection;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

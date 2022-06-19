@@ -1,7 +1,7 @@
-package com.greenjon902.gjms.socket.packetHandler;
+package com.greenjon902.gjms.connection.packetHandler;
 
-import com.greenjon902.gjms.socket.DataCoder;
-import com.greenjon902.gjms.socket.PlayerConnection;
+import com.greenjon902.gjms.connection.DataCoder;
+import com.greenjon902.gjms.connection.PlayerConnection;
 
 import java.io.IOException;
 
