@@ -1,7 +1,6 @@
 package com.greenjon902.gjms.connection.packetAdapter;
 
 import com.greenjon902.gjms.connection.ConnectionState;
-import com.greenjon902.gjms.connection.PlayerConnection;
 import org.jetbrains.annotations.NotNull;
 
 /**
