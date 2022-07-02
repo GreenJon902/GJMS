@@ -1,6 +1,5 @@
-package com.greenjon902.gjms.connection.packetAdapter;
+package com.greenjon902.gjms.connection;
 
-import com.greenjon902.gjms.connection.PlayerConnection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +25,7 @@ public abstract class PacketAdapter {
      * @return The integer that was decoded
      * @throws IOException If an I/O error occurs
      */
-    public static int decodeFirstVarInt(@NotNull PlayerConnection connection) throws IOException {
+    public static int decodeFirstVarInt(@NotNull Connection connection) throws IOException {
         int value = 0; // The number that is being decoded
         int position = 0; // The position of value that is currently being edited
 
@@ -44,14 +43,14 @@ public abstract class PacketAdapter {
 
     /**
      * Reads the first string from the players incoming packets.
-     * Strings are transmitted in UTF-8 and are prefixed by a varInt (see {@link #decodeFirstVarInt(PlayerConnection)}).
+     * Strings are transmitted in UTF-8 and are prefixed by a varInt (see {@link #decodeFirstVarInt(Connection)}).
      *
      * @param connection The connection where the packet is coming from
      * @return The string that was decoded
      * @throws IOException If an I/O error occurs
      */
     @Contract("_ -> new")
-    public static @NotNull String decodeFirstString(@NotNull PlayerConnection connection) throws IOException {
+    public static @NotNull String decodeFirstString(@NotNull Connection connection) throws IOException {
         int length = decodeFirstVarInt(connection);
         byte[] bytes = new byte[length];
         connection.inputStream.read(bytes);
@@ -59,7 +58,7 @@ public abstract class PacketAdapter {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    public static int decodeFirstUnsignedShort(@NotNull PlayerConnection connection) throws IOException {
+    public static int decodeFirstUnsignedShort(@NotNull Connection connection) throws IOException {
         int value = 0;
         value += connection.inputStream.read() << 8;
         value += connection.inputStream.read();

@@ -1,6 +1,6 @@
 package com.greenjon902.gjms;
 
-import com.greenjon902.gjms.connection.ConnectionHandler;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
 
 public class GJMS {
@@ -10,6 +10,6 @@ public class GJMS {
 
         NewConnectionHandler socketManager = new NewConnectionHandler(25565);
         socketManager.start();
-        ConnectionHandler.startNewHandler();
+        PrePlayConnectionHandler.startNewHandler();
     }
 }

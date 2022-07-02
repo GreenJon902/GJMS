@@ -1,11 +1,14 @@
 package com.greenjon902.gjms.connection;
 
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Accepts any incoming connections and gives them to {@link ConnectionHandler}
+ * Accepts any incoming connections and gives them to {@link PrePlayConnectionHandler}
  */
 public class NewConnectionHandler {
     private final int port;
@@ -31,8 +34,8 @@ public class NewConnectionHandler {
                     Socket connection = serverSocket.accept();
                     System.out.println("Incoming connection from " + connection.getInetAddress() + ":" + connection.getPort());
 
-                    PlayerConnection playerConnection = new PlayerConnection(connection);
-                        ConnectionHandler.addConnection(playerConnection);
+                    PrePlayConnection prePlayConnection = new PrePlayConnection(connection);
+                        PrePlayConnectionHandler.addConnection(prePlayConnection);
 
                 } catch (Exception e) {
                     System.out.println("Failed to accept incoming connection - " + e.getMessage());
