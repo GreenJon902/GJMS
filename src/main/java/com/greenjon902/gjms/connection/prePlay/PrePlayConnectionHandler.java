@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles connections from clients who are not in the play state.It is given connections by the
@@ -58,5 +59,14 @@ public class PrePlayConnectionHandler {
             default:
                 throw new RuntimeException("Only PrePlayConnectionState.HANDSHAKE has been implemented");
         }
+    }
+
+    /**
+     * Gets all open {@link PrePlayConnection}s, used for testing.
+     *
+     * @return All open connections
+     */
+    public static PrePlayConnection[] getConnections() {
+        return connections.toArray(PrePlayConnection[]::new);
     }
 }
