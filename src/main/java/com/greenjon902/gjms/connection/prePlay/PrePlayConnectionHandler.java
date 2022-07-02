@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * {@link NewConnectionHandler}.
  */
 public class PrePlayConnectionHandler {
-    private static final ArrayList<PrePlayConnection> connections = new ArrayList<>();
+    private static final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<PrePlayConnection>());
 
     /**
      * Adds a connection that will need to be handled.
@@ -30,11 +31,16 @@ public class PrePlayConnectionHandler {
      */
     public static void startNewHandler() {
         new Thread(() -> {
+            int i = 0;
             while (true) {
-                for (PrePlayConnection connection : connections) {
+                if (connections.size() != 0) {
+                    PrePlayConnection connection = connections.get(i);
+                    i++;
+                    i %= connections.size();
+
                     try {
                         if (connection.inputStream.available() != 0) {  // Only handle packets when there is a
-                                                                              // packet to be handled
+                            // packet to be handled
                             handleNextPacketFrom(connection);
                         }
                     } catch (IOException e) {
