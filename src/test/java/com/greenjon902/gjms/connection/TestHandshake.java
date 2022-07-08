@@ -39,10 +39,11 @@ public class TestHandshake {
                 0xf6, // 11110110
                 0x05, // 00000101
                 // Server Address - String (255)
-                ip.length(), // 00001001
-                '1', '2', '7', '.', '0', '.', '0', '.', '1', // Should be same as ip
+                0x09, // 00001001
+                '1', '2', '7', '.', '0', '.', '0', '.', '1',
                 // Server Port - Unsigned Short
-                port,
+                0x63, // 01100011
+                0xdd, // 11011101
                 // Next State - VarInt
                 0x01 // 00000001
 
@@ -53,7 +54,7 @@ public class TestHandshake {
             outputStream.write(data);
         }
 
-        Thread.sleep(100); // Wait for server to have updated
+        Thread.sleep(1000); // Wait for server to have updated
 
         // Check ---
         Assert.assertEquals(0, inputStream.available());

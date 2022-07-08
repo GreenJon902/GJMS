@@ -1,6 +1,8 @@
 package com.greenjon902.gjms.connection.prePlay;
 
 import com.greenjon902.gjms.connection.NewConnectionHandler;
+import com.greenjon902.gjms.connection.Packet;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -59,7 +61,12 @@ public class PrePlayConnectionHandler {
     private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
         switch (connection.getPrePlayConnectionState()) {  // TODO: Add other PrePlayConnectionStates
             case HANDSHAKE:
-                System.out.println(connection.inputStream.read());
+                Packet packet = connection.getPacketAdapter().getFirstPacket(connection);
+                if (!(packet instanceof HandshakePacket handshakePacket)) {
+                    throw new RuntimeException("Clients in the HANDSHAKE state can only send HandshakePacket");
+                }
+                connection.setProtocolVersion(handshakePacket.protocolVersion);
+                connection.setPrePlayConnectionState(handshakePacket.nextState);
                 break;
 
             default:

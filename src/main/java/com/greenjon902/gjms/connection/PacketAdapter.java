@@ -1,5 +1,6 @@
 package com.greenjon902.gjms.connection;
 
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,4 +74,12 @@ public abstract class PacketAdapter {
     public static @NotNull PacketAdapter getInstance() {
         throw new RuntimeException("getInstance has not been implemented yet");
     }
+
+    /**
+     * Gets the first packet from a connection
+     *
+     * @param connection The connection where the packet is coming from
+     * @return The packet that has been got
+     */
+    public abstract Packet getFirstPacket(Connection connection) throws IOException;
 }
