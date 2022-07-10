@@ -9,8 +9,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Any class that extends this class will be used to decode bytes in a packet from a {@link InputStream} to a
- * usable format, they can also encode a packet for sending through the network.
+ * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used to
+ * convert bytes from a {@link Connection} to a {@link Packet} and be able to convert a {@link Packet} to bytes and send
+ * it through a {@link Connection}.<br>
+ * The reason for this is that a game will only need to understand one packet system,
+ * but it will be able to communicate with legacy and future clients without any extra development as all conversions
+ * will be handled by the {@link PacketAdapter}.
  */
 public abstract class PacketAdapter {
     private static final int SEGMENT_BITS = 0x7F; // 11111110
