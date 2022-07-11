@@ -36,10 +36,8 @@ public abstract class PacketAdapter {
 
         while (true) {
             byte currentByte = (byte) connection.inputStream.read();
-            System.out.println(currentByte);
 
             value |= (currentByte & SEGMENT_BITS) << position; // adds the new byte to the value
-            System.out.println(value);
 
             if ((currentByte & CONTINUE_BIT) == 0) break; // is the number finished?
             position += 7; // because bytes in varInts store 7 bits of data
@@ -60,8 +58,6 @@ public abstract class PacketAdapter {
     @Contract("_ -> new")
     public static @NotNull String decodeFirstString(@NotNull Connection connection) throws IOException {
         int length = decodeFirstVarInt(connection);
-        System.out.println(length);
-        System.out.println();
         byte[] bytes = new byte[length];
         connection.inputStream.read(bytes);
 

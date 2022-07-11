@@ -69,10 +69,10 @@ public class TestDataDecoding {
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
         Connection connection = new Connection(inputStream, null, null);
 
-        String[] out = new String[4];
+        String[] out = new String[3];
 
         // Run --
-        for (int i=0; i<4; i++) {
+        for (int i=0; i<3; i++) {
             out[i] = PacketAdapter.decodeFirstString(connection);
         }
 
