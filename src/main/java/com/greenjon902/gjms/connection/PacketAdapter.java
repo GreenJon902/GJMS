@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
  * will be handled by the {@link PacketAdapter}.
  */
 public abstract class PacketAdapter {
-    private static final int SEGMENT_BITS = 0x7F; // 11111110
+    private static final int SEGMENT_BITS = 0x7F; // 01111111
     private static final int CONTINUE_BIT = 0x80; // 10000000
 
     /**
@@ -36,8 +36,11 @@ public abstract class PacketAdapter {
 
         while (true) {
             byte currentByte = (byte) connection.inputStream.read();
+            System.out.println(currentByte);
 
             value |= (currentByte & SEGMENT_BITS) << position; // adds the new byte to the value
+            System.out.println(value);
+
             if ((currentByte & CONTINUE_BIT) == 0) break; // is the number finished?
             position += 7; // because bytes in varInts store 7 bits of data
             if (position >= 32) throw new RuntimeException("VarInt is too big");
@@ -57,6 +60,8 @@ public abstract class PacketAdapter {
     @Contract("_ -> new")
     public static @NotNull String decodeFirstString(@NotNull Connection connection) throws IOException {
         int length = decodeFirstVarInt(connection);
+        System.out.println(length);
+        System.out.println();
         byte[] bytes = new byte[length];
         connection.inputStream.read(bytes);
 
