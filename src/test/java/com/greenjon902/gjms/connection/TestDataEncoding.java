@@ -7,7 +7,7 @@ import static com.greenjon902.gjms.Utils.byteArray;
 
 public class TestDataEncoding {
     @Test
-    public void EncodeVarInt() {
+    public void encodeVarInt() {
         // Check --
         Assert.assertArrayEquals(byteArray(0x00), PacketAdapter.encodeVarInt(0));
         Assert.assertArrayEquals(byteArray(0x01), PacketAdapter.encodeVarInt(1));

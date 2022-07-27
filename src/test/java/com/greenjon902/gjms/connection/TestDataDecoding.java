@@ -17,7 +17,7 @@ import static com.greenjon902.gjms.Utils.byteArray;
 
 public class TestDataDecoding {
     @Test
-    public void DecodeVarInt() throws IOException {
+    public void decodeVarInt() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00));
@@ -58,7 +58,7 @@ public class TestDataDecoding {
     }
 
     @Test
-    public void DecodeString() throws IOException {
+    public void decodeString() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(4);
