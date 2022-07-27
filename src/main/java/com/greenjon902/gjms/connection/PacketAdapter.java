@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 /**
  * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used to
- * convert bytes from a {@link Connection} to a {@link Packet} and be able to convert a {@link Packet} to bytes and send
+ * convert bytes from a {@link Connection} to a {@link ServerboundPacket} and be able to convert a {@link ServerboundPacket} to bytes and send
  * it through a {@link Connection}.<br>
  * The reason for this is that a game will only need to understand one packet system,
  * but it will be able to communicate with legacy and future clients without any extra development as all conversions
@@ -18,12 +18,13 @@ import java.util.Arrays;
 public abstract class PacketAdapter {
     private static final int SEGMENT_BITS = 0x7F; // 01111111
     private static final int CONTINUE_BIT = 0x80; // 10000000
+    private static final int BYTE_BITS = 0xFF; // 11111111
 
     /**
      * Reads the first variable length integer from the players incoming packets.
      * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
-     * VarInts can store up to 5 bits of data.
+     * VarInts can store up to 5 bytes of data.
      *
      * @param connection The connection where the packet is coming from
      * @return The integer that was decoded
@@ -100,19 +101,63 @@ public abstract class PacketAdapter {
     }
 
     /**
-     * Gets the usable instance of the {@link PacketAdapter}.
+     * Gets the first {@link Long} from a connection.
      *
-     * @return The instance of the packet adapter
+     * @param connection The connection where the packet is coming from
+     * @return The long that was decoded
+     * @throws IOException If an I/O error occurs
      */
-    public static @NotNull PacketAdapter getInstance() {
-        throw new RuntimeException("getInstance has not been implemented yet");
+    public static long decodeFirstLong(@NotNull Connection connection) throws IOException {
+        long value = 0;
+        for (int i=0;i<8;i++) {
+            value <<= 8;
+            value |= connection.inputStream.read() & BYTE_BITS;
+        }
+        return value;
     }
 
     /**
-     * Gets the first packet from a connection
+     * Encodes a long by turning it into bytes.
+     *
+     * @param value The value to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodeLong(long value) {
+        return new byte[] {
+                (byte) (value >> 56),
+                (byte) (value >> 48),
+                (byte) (value >> 40),
+                (byte) (value >> 32),
+                (byte) (value >> 24),
+                (byte) (value >> 16),
+                (byte) (value >> 8),
+                (byte) value
+        };
+    }
+
+    /**
+     * Gets the first packet from a connection.
      *
      * @param connection The connection where the packet is coming from
      * @return The packet that has been got
      */
-    public abstract Packet getFirstPacket(Connection connection) throws IOException;
+    public abstract ServerboundPacket getFirstPacket(Connection connection) throws IOException;
+
+    /**
+     * Sends a packet to the given connection.
+     *
+     * @param packet The packet that is being sent
+     * @param connection The connection where the packet is going to
+     */
+    public void sendPacket(ClientboundPacket packet, Connection connection) throws IOException {
+        connection.outputStream.write(encodePacket(packet));
+    }
+
+    /**
+     * Encodes a packet
+     *
+     * @param packet The packet that is encoded
+     * @return The encoded packet
+     */
+    protected abstract byte[] encodePacket(ClientboundPacket packet) throws IOException;
 }

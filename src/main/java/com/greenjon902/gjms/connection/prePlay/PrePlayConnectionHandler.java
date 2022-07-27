@@ -1,8 +1,13 @@
 package com.greenjon902.gjms.connection.prePlay;
 
+import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
-import com.greenjon902.gjms.connection.Packet;
+import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound.PingResponse;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound.StatusResponse;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.PingRequest;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -59,18 +64,32 @@ public class PrePlayConnectionHandler {
      * @param connection The connection where the packet is coming from
      */
     private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
-        switch (connection.getPrePlayConnectionState()) {  // TODO: Add other PrePlayConnectionStates
-            case HANDSHAKE:
-                Packet packet = connection.getPacketAdapter().getFirstPacket(connection);
+        ServerboundPacket packet = connection.getPacketAdapter().getFirstPacket(connection);
+        // TODO: Add other PrePlayConnectionStates
+        switch (connection.getPrePlayConnectionState()) {
+            case HANDSHAKE -> {
                 if (!(packet instanceof HandshakePacket handshakePacket)) {
                     throw new RuntimeException("Clients in the HANDSHAKE state can only send HandshakePacket");
                 }
-                connection.setProtocolVersion(handshakePacket.protocolVersion);
-                connection.setPrePlayConnectionState(handshakePacket.nextState);
-                break;
-
-            default:
-                throw new RuntimeException("Only PrePlayConnectionState.HANDSHAKE has been implemented");
+                connection.updatePacketAdaptor(handshakePacket.nextState, handshakePacket.protocolVersion);
+            }
+            case STATUS -> {
+                if (packet instanceof StatusRequest) {
+                    ClientboundPacket response = new StatusResponse("1.19", connection.getProtocolVersion(),
+                            12, 3,
+                            "[{\"name\":\"GreenJon\",\"id\":\"86f5d3d8-0d4b-4230-9852-77a40baf39bd\"}," +
+                                    "{\"name\":\"AdminJon_\",\"id\":\"0f549ef4-000b-4a9a-8fd2-2c3e7044ea54\"}," +
+                                    "{\"name\":\"Dream\",\"id\":\"ec70bcaf-702f-4bb8-b48d-276fa52a780c\"}]",
+                            "{\"text\": \"Hello World!\"}", false);
+                    connection.getPacketAdapter().sendPacket(response, connection);
+                } else if (packet instanceof PingRequest pingRequest) {
+                    ClientboundPacket response = new PingResponse(pingRequest.payload);
+                    connection.getPacketAdapter().sendPacket(response, connection);
+                } else {
+                    throw new RuntimeException("Clients in the STATUS state can only send StatusRequest or PingRequest");
+                }
+            }
+            default -> throw new RuntimeException("Only PrePlayConnectionState.HANDSHAKE has been implemented");
         }
     }
 

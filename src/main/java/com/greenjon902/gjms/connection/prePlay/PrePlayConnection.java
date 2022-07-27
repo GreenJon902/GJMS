@@ -2,7 +2,7 @@ package com.greenjon902.gjms.connection.prePlay;
 
 import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.PacketAdapter;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.HandshakePacketAdapter;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapterSelector;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -13,11 +13,12 @@ import java.net.Socket;
  */
 public class PrePlayConnection extends Connection {
     private int protocolVersion = -1; // by default is not set, is editable in prePlay as we don't know it yet
-    private PacketAdapter packetAdapter = HandshakePacketAdapter.getInstance(); // first packetAdapter
+    private PacketAdapter packetAdapter;
     private PrePlayConnectionState prePlayConnectionState = PrePlayConnectionState.HANDSHAKE;
 
     public PrePlayConnection(Socket socket) throws IOException {
         super(socket);
+        updatePacketAdaptor(PrePlayConnectionState.HANDSHAKE, -1);
     }
 
     /**
@@ -39,15 +40,6 @@ public class PrePlayConnection extends Connection {
     }
 
     /**
-     * Sets this {@link PrePlayConnection}'s {@link PrePlayConnectionState}.
-     *
-     * @param prePlayConnectionState The new pre play connection state
-     */
-    public void setPrePlayConnectionState(PrePlayConnectionState prePlayConnectionState) {
-        this.prePlayConnectionState = prePlayConnectionState;
-    }
-
-    /**
      * Gets this {@link PrePlayConnection}'s {@link #protocolVersion}.
      *
      * @return The protocol version
@@ -56,12 +48,17 @@ public class PrePlayConnection extends Connection {
         return protocolVersion;
     }
 
+
     /**
-     * Sets this {@link PrePlayConnection}'s {@link #protocolVersion}.
+     * Updates this {@link PrePlayConnection}'s {@link #packetAdapter} to the correct one specified by the parameters.
      *
-     * @param protocolVersion The new protocol version
+     * @param state The {@link PrePlayConnectionState} of the connection
+     * @param protocolVersion The connection's protocol version
      */
-    public void setProtocolVersion(int protocolVersion) {
+    public void updatePacketAdaptor(PrePlayConnectionState state, int protocolVersion) {
+        System.out.println("Updating packetAdapter for self - " + this + " | state=" + state + " protocolVersion=" + protocolVersion);
+        this.packetAdapter = PrePlayPacketAdapterSelector.selectAdapter(state, protocolVersion);
+        this.prePlayConnectionState = state;
         this.protocolVersion = protocolVersion;
     }
 }

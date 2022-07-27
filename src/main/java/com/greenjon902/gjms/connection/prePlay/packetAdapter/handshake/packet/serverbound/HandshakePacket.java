@@ -1,12 +1,12 @@
 package com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound;
 
-import com.greenjon902.gjms.connection.Packet;
+import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
 
 /**
  * A packet sent from the client that contains information about the version of the client and why it's connecting.
  */
-public class HandshakePacket implements Packet {
+public class HandshakePacket implements ServerboundPacket {
     public final int protocolVersion;
     public final String serverAddress;
     public final int port;
@@ -36,5 +36,15 @@ public class HandshakePacket implements Packet {
         this.serverAddress = serverAddress;
         this.port = port;
         this.nextState = prePlayConnectionState;
+    }
+
+    /**
+     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
+     *
+     * @return The packet id of this packet
+     */
+    @Override
+    public int getPacketId() {
+        return 0;
     }
 }

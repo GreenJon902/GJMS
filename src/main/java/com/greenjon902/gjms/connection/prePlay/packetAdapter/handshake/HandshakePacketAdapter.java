@@ -1,39 +1,27 @@
 package com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake;
 
+import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.Connection;
-import com.greenjon902.gjms.connection.Packet;
-import com.greenjon902.gjms.connection.PacketAdapter;
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
+import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapter;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 /**
- * Contains the functionality for converting packets when the client's
- * {@link PrePlayConnectionState} is {@link PrePlayConnectionState#HANDSHAKE}.
+ * Contains the functionality for converting packets when the connection's {@link PrePlayConnectionState}
+ * is {@link PrePlayConnectionState#HANDSHAKE}. There is no protocolVersion requirement as the server does not know the
+ * connections protocolVersion yet!
  */
 public class HandshakePacketAdapter extends PrePlayPacketAdapter {
-    static final PacketAdapter instance = new HandshakePacketAdapter();
-
-    /**
-     * Gets the usable instance of the {@link PacketAdapter}.
-     *
-     * @return The instance of the packet adapter
-     */
-    public static @NotNull PacketAdapter getInstance(){
-        return instance;
-    }
-
     /**
      * Gets the first packet from a connection
      *
      * @param connection The connection where the packet is coming from
      */
     @Override
-    public Packet getFirstPacket(Connection connection) throws IOException {
+    public ServerboundPacket getFirstPacket(Connection connection) throws IOException {
         int packetLength = decodeFirstVarInt(connection);
         int packetId = decodeFirstVarInt(connection);
 
@@ -47,5 +35,10 @@ public class HandshakePacketAdapter extends PrePlayPacketAdapter {
             default:
                 throw new RuntimeException("Unknown packet with ID " + packetId);
         }
+    }
+
+    @Override
+    protected byte[] encodePacket(ClientboundPacket packet) throws IOException {
+        throw new RuntimeException("HandshakePacketAdapter has no clientbound packets");
     }
 }
