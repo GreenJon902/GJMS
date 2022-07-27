@@ -1,14 +1,8 @@
 package com.greenjon902.gjms.connection.packetAdapter;
 
-import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.PacketAdapter;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static com.greenjon902.gjms.Utils.byteArray;
 
