@@ -13,22 +13,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.greenjon902.gjms.Utils.byteArray;
+
 public class TestDataDecoding {
     @Test
     public void DecodeVarInt() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        outputStream.write(0x00);
-        outputStream.write(0x01);
-        outputStream.write(0x02);
-        outputStream.write(0x7f);
-        outputStream.write(0x80); outputStream.write(0x01);
-        outputStream.write(0xff); outputStream.write(0x01);
-        outputStream.write(0xdd); outputStream.write(0xc7); outputStream.write(0x01);
-        outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0x7f);
-        outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0x07);
-        outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0xff); outputStream.write(0x0f);
-        outputStream.write(0x80); outputStream.write(0x80); outputStream.write(0x80); outputStream.write(0x80); outputStream.write(0x08);
+        outputStream.write(byteArray(0x00));
+        outputStream.write(byteArray(0x01));
+        outputStream.write(byteArray(0x02));
+        outputStream.write(byteArray(0x7f));
+        outputStream.write(byteArray(0x80, 0x01));
+        outputStream.write(byteArray(0xff, 0x01));
+        outputStream.write(byteArray(0xdd, 0xc7, 0x01));
+        outputStream.write(byteArray(0xff, 0xff, 0x7f));
+        outputStream.write(byteArray(0xff, 0xff, 0xff, 0xff, 0x07));
+        outputStream.write(byteArray(0xff, 0xff, 0xff, 0xff, 0x0f));
+        outputStream.write(byteArray(0x80, 0x80, 0x80, 0x80, 0x08));
 
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 

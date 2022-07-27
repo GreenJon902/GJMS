@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static com.greenjon902.gjms.Utils.byteArray;
+
 public class Status_ServerListPing {
     public final String ip = "127.0.0.1";
     public final short port = 25565;
@@ -31,7 +33,7 @@ public class Status_ServerListPing {
 
         long currentTime = System.currentTimeMillis();
 
-        int[] packets = {
+        byte[] packets = byteArray(
                 // Handshake ------------------------------
                 // Length - VarInt
                 0x10, // 00010000
@@ -69,15 +71,11 @@ public class Status_ServerListPing {
                 (byte) (currentTime >> 24),
                 (byte) (currentTime >> 16),
                 (byte) (currentTime >> 8),
-                (byte) currentTime,
-        };
+                (byte) currentTime
+        );
 
         // Run ---
-        for (int data : packets) {
-            outputStream.write(data);
-        }
-
-        Thread.sleep(1000); // Wait for server to have updated
+        outputStream.write(packets);
 
         // Check ---
         // Status Request
