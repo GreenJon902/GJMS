@@ -78,7 +78,7 @@ public class Status_ServerListPing {
         outputStream.write(packets);
 
         // Check ---
-        // Status Request
+        // Status Response -
 
         // Packet length
         while (true) { // TODO: Check packet length
@@ -87,7 +87,7 @@ public class Status_ServerListPing {
         }
 
         // Packet ID
-        Assert.assertEquals(0, inputStream.read());
+        Assert.assertEquals("Wrong PacketId for StatusResponse", 0, inputStream.read());
 
         // JSON Response
         int jsonResponseLength = 0;
@@ -105,13 +105,13 @@ public class Status_ServerListPing {
         // TODO: Check json
 
 
-        // Ping Request
+        // Ping Response -
 
         // Packet length
-        Assert.assertEquals(9, inputStream.read());
+        Assert.assertEquals("Wrong PacketLength for PingResponse", 9, inputStream.read());
 
-        // Protocol version
-        Assert.assertEquals(1, inputStream.read());
+        // Packet ID
+        Assert.assertEquals("Wrong PacketId for PingResponse", 1, inputStream.read());
 
         // Payload
         long payload = 0;
@@ -119,6 +119,6 @@ public class Status_ServerListPing {
             payload <<= 8;
             payload |= inputStream.read() & 0xFF;
         }
-        Assert.assertEquals(currentTime, payload);
+        Assert.assertEquals("Wrong Payload for PingResponse", currentTime, payload);
     }
 }
