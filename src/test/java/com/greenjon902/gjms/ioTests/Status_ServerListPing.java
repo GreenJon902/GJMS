@@ -24,7 +24,7 @@ public class Status_ServerListPing {
     }
 
     @Test
-    public void MC1_19() throws IOException, InterruptedException {
+    public void MC1_19() throws IOException {
         // Setup ---
         makeServer();
         Socket socket = new Socket(ip, port);

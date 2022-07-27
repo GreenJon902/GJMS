@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /**
  * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used to
@@ -55,7 +54,6 @@ public abstract class PacketAdapter {
      *
      * @param value The int to be encoded
      * @return The byte[] of the varInt
-     * @throws IOException If an I/O error occurs
      */
     public static byte[] encodeVarInt(int value) {
         byte[] encoded = new byte[5]; // maximum it can hold
@@ -159,5 +157,5 @@ public abstract class PacketAdapter {
      * @param packet The packet that is encoded
      * @return The encoded packet
      */
-    protected abstract byte[] encodePacket(ClientboundPacket packet) throws IOException;
+    protected abstract byte[] encodePacket(ClientboundPacket packet);
 }

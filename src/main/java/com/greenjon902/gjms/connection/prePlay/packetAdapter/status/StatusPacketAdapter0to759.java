@@ -10,10 +10,7 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clien
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.PingRequest;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 
-import javax.lang.model.type.ArrayType;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -43,7 +40,7 @@ public class StatusPacketAdapter0to759 extends PrePlayPacketAdapter {
     }
 
     @Override
-    protected byte[] encodePacket(ClientboundPacket packet) throws IOException {
+    protected byte[] encodePacket(ClientboundPacket packet) {
         byte[] content;
 
         if (packet instanceof StatusResponse statusResponse) {

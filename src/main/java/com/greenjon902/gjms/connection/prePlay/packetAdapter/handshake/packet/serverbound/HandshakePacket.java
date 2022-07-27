@@ -20,17 +20,11 @@ public class HandshakePacket implements ServerboundPacket {
     }
 
     public HandshakePacket(int protocolVersion, String serverAddress, int port, int nextState) {
-        PrePlayConnectionState prePlayConnectionState;
-        switch (nextState) {
-            case 1:
-                prePlayConnectionState = PrePlayConnectionState.STATUS;
-                break;
-            case 2:
-                prePlayConnectionState = PrePlayConnectionState.LOGIN;
-                break;
-            default:
-                throw new IllegalArgumentException("Argument nextState can be between 1 and 2");
-        }
+        PrePlayConnectionState prePlayConnectionState = switch (nextState) {
+            case 1 -> PrePlayConnectionState.STATUS;
+            case 2 -> PrePlayConnectionState.LOGIN;
+            default -> throw new IllegalArgumentException("Argument nextState can be between 1 and 2");
+        };
 
         this.protocolVersion = protocolVersion;
         this.serverAddress = serverAddress;

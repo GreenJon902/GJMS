@@ -1,7 +1,6 @@
 package com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound;
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
-import com.greenjon902.gjms.connection.ServerboundPacket;
 
 public class StatusResponse implements ClientboundPacket {
     public final String versionName;

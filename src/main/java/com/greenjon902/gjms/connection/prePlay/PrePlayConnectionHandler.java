@@ -20,7 +20,7 @@ import java.util.List;
  * {@link NewConnectionHandler}.
  */
 public class PrePlayConnectionHandler {
-    private static final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<PrePlayConnection>());
+    private static final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Adds a connection that will need to be handled.

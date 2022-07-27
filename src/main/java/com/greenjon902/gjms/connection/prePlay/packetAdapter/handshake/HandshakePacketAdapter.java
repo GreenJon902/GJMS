@@ -25,20 +25,18 @@ public class HandshakePacketAdapter extends PrePlayPacketAdapter {
         int packetLength = decodeFirstVarInt(connection);
         int packetId = decodeFirstVarInt(connection);
 
-        switch (packetId) {
-            case 0x00: // 00000000 - Handshake
-                int protocolVersion = decodeFirstVarInt(connection);
-                String serverAddress = decodeFirstString(connection);
-                int port = decodeFirstUnsignedShort(connection);
-                int nextState = decodeFirstVarInt(connection);
-                return new HandshakePacket(protocolVersion, serverAddress, port, nextState);
-            default:
-                throw new RuntimeException("Unknown packet with ID " + packetId);
+        if (packetId == 0x00) { // 00000000 - Handshake
+            int protocolVersion = decodeFirstVarInt(connection);
+            String serverAddress = decodeFirstString(connection);
+            int port = decodeFirstUnsignedShort(connection);
+            int nextState = decodeFirstVarInt(connection);
+            return new HandshakePacket(protocolVersion, serverAddress, port, nextState);
         }
+        throw new RuntimeException("Unknown packet with ID " + packetId);
     }
 
     @Override
-    protected byte[] encodePacket(ClientboundPacket packet) throws IOException {
+    protected byte[] encodePacket(ClientboundPacket packet) {
         throw new RuntimeException("HandshakePacketAdapter has no clientbound packets");
     }
 }
