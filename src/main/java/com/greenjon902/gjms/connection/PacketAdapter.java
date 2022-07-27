@@ -1,12 +1,11 @@
 package com.greenjon902.gjms.connection;
 
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used to
@@ -45,6 +44,35 @@ public abstract class PacketAdapter {
         }
 
         return value;
+    }
+
+    /**
+     * Encodes an integer as a varInt in a byte array.
+     * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
+     * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
+     * VarInts can store up to 5 bytes of data.
+     *
+     * @param value The int to be encoded
+     * @return The byte[] of the varInt
+     * @throws IOException If an I/O error occurs
+     */
+    public static byte[] encodeVarInt(int value) {
+        byte[] encoded = new byte[5]; // maximum it can hold
+        int i = 0;
+        while (true){
+            if ((value & ~SEGMENT_BITS) == 0) {
+                encoded[i] = (byte) value;
+                break;
+            }
+            encoded[i] = (byte) ((value & SEGMENT_BITS) | CONTINUE_BIT);
+
+            value >>>= 7;
+            i++;
+        }
+
+        byte[] croppedEncoded = new byte[i+1];
+        System.arraycopy(encoded, 0, croppedEncoded, 0, i+1); // remove the empty values from the array
+        return croppedEncoded;
     }
 
     /**
