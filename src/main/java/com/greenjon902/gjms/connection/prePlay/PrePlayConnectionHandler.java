@@ -47,11 +47,15 @@ public class PrePlayConnectionHandler {
 
                     try {
                         if (connection.inputStream.available() != 0) {  // Only handle packets when there is a
-                            // packet to be handled
+                                                                        // packet to be handled
                             handleNextPacketFrom(connection);
                         }
-                    } catch (IOException e) {
-                        System.out.println("Failed to handle packet from " + connection.ip);
+                    } catch (Exception e) {
+                        System.out.println("Failed to handle packet from " + connection.ip + " - " + e.getMessage());
+                        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                            System.out.println(stackTraceElement.toString());
+                        }
+                        System.out.println();
                     }
                 }
             }
