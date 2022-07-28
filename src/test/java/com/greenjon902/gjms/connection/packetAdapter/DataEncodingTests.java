@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import static com.greenjon902.gjms.Utils.byteArray;
 
-public class TestDataEncoding {
+public class DataEncodingTests {
     @Test
-    public void encodeVarInt() {
+    public void testEncodeVarInt() {
         // Check --
         Assert.assertArrayEquals(byteArray(0x00), PacketAdapter.encodeVarInt(0));
         Assert.assertArrayEquals(byteArray(0x01), PacketAdapter.encodeVarInt(1));
@@ -24,7 +24,7 @@ public class TestDataEncoding {
     }
 
     @Test
-    public void encodeLong() {
+    public void testEncodeLong() {
         // Check --
         Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), PacketAdapter.encodeLong(0L));
         Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), PacketAdapter.encodeLong(1L));

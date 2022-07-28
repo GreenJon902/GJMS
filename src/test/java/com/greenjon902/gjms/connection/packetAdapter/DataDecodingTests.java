@@ -13,9 +13,9 @@ import java.nio.charset.StandardCharsets;
 
 import static com.greenjon902.gjms.Utils.byteArray;
 
-public class TestDataDecoding {
+public class DataDecodingTests {
     @Test
-    public void decodeVarInt() throws IOException {
+    public void testDecodeVarInt() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00)); // 0
@@ -55,7 +55,7 @@ public class TestDataDecoding {
     }
 
     @Test
-    public void decodeString() throws IOException {
+    public void testDecodeString() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(4);
@@ -82,7 +82,7 @@ public class TestDataDecoding {
     }
 
     @Test
-    public void decodeFirstUnsignedShort() throws IOException {
+    public void testDecodeFirstUnsignedShort() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00, 0x00)); // 0
@@ -114,7 +114,7 @@ public class TestDataDecoding {
     }
 
     @Test
-    public void decodeFirstLong() throws IOException {
+    public void testDecodeFirstLong() throws IOException {
         // Setup ---
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)); // 0
