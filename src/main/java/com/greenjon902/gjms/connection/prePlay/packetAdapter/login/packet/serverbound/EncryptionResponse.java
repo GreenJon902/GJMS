@@ -39,17 +39,14 @@ public class EncryptionResponse implements ServerboundPacket {
 
     @Override
     public String toString() {
-        bool hasVerifyToken = hasVerifyToken();
-        if (hasVerifyToken) {
+        if (hasVerifyToken()) {
             return "EncryptionResponse{" +
                     "sharedSecret=" + sharedSecret +
-                    "hasVerifyToken=" + hasVerifyToken +
                     "verifyToken=" + verifyToken +
                     '}';
         } else {
             return "EncryptionResponse{" +
                     "sharedSecret=" + sharedSecret +
-                    "hasVerifyToken=" + hasVerifyToken +
                     "salt=" + salt +
                     "messageSignature=" + messageSignature +
                     '}';
