@@ -35,11 +35,9 @@ public class LoginStart implements ServerboundPacket {
 
     @Override
     public String toString() {
-        hasSignatureData = hasSignatureData();
-        if (hasSignatureData) {
+        if (hasSignatureData()) {
             return "EncryptionRequest{" +
                     "name=" + name +
-                    "hasSignatureData=" + hasSignatureData +
                     "timestamp=" + timestamp +
                     "publicKey=" + publicKey +
                     "signature=" + signature +
@@ -47,7 +45,6 @@ public class LoginStart implements ServerboundPacket {
         } else {
             return "LoginStart{" +
                     "name=" + name +
-                    "hasSignatureData=" + hasSignatureData +
                     '}';
         }
     }
