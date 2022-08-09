@@ -4,15 +4,12 @@ import com.greenjon902.gjms.connection.ServerboundPacket;
 
 public class LoginStart implements ServerboundPacket {
     public final String name;
-    public final bool hasSignatureData;
     public final long timestamp;
     public final byte[] publicKey;
     public final byte[] signature;
 
     public LoginStart(String name) {
         this(name, null, null, null);
-
-        this.hasSignatureData = false;
     }
 
     public LoginStart(String name, long timestamp, byte[] publicKey, byte[] signature) {
@@ -20,8 +17,10 @@ public class LoginStart implements ServerboundPacket {
         this.timestamp = timestamp;
         this.publicKey = publickey;
         this.signature = signature;
+    }
 
-        this.hasSignatureData = true;
+    public bool hasSignatureData() {
+        return (timestamp != null);
     }
 
     /**
@@ -36,6 +35,7 @@ public class LoginStart implements ServerboundPacket {
 
     @Override
     public String toString() {
+        hasSignatureData = hasSignatureData();
         if (hasSignatureData) {
             return "EncryptionRequest{" +
                     "name=" + name +
