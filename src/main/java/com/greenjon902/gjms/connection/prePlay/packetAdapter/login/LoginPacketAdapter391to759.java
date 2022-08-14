@@ -45,7 +45,7 @@ public class LoginPacketAdapter391to759 extends PrePlayPacketAdapter {
             } // else:
             return new LoginStart(name);
 
-        } else if (packetId == 0x01) {
+        } else if (packetId == 0x01) { // 00000001 - Encryption Response
             byte[] sharedSecret = decodeFirstByteArray(connection);
             boolean hasVerifyToken = decodeFirstBoolean(connection);
             if (hasVerifyToken) {
