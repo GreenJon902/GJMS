@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used to
@@ -182,6 +183,23 @@ public abstract class PacketAdapter {
      */
     public static byte[] encodeString(String string) {
         return encodeBytes(string.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Encodes a UUID by turning it into 16 bytes / two unsigned longs.
+     *
+     * @param uuid The uuid to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodeUUID(UUID uuid) {
+        byte[] mostSignificant = encodeLong(uuid.getMostSignificantBits());
+        byte[] leastSignificant = encodeLong(uuid.getLeastSignificantBits());
+
+        byte[] bytes = new byte[16];
+        System.arraycopy(mostSignificant, 0, bytes, 0, 8);
+        System.arraycopy(leastSignificant, 0, bytes, 8, 8);
+
+        return bytes;
     }
 
     /**
