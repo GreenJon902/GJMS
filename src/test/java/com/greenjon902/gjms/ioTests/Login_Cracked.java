@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static com.greenjon902.gjms.Utils.byteArray;
+import static com.greenjon902.gjms.Utils.readVarInt;
 
 public class Login_Cracked {
     private final String ip = "127.0.0.1";
@@ -65,10 +66,7 @@ public class Login_Cracked {
         // Login Success  -
 
         // Packet length
-        while (true) { // TODO: Check packet length
-            byte currentByte = (byte) inputStream.read();
-            if ((currentByte & 0x80) == 0) break;
-        }
+        readVarInt(inputStream); // TODO: Check packet length
 
         // Packet ID
         Assert.assertEquals("Wrong PacketId for LoginSuccess", 0x02, inputStream.read());
@@ -87,50 +85,22 @@ public class Login_Cracked {
         Assert.assertEquals(UUID.nameUUIDFromBytes("OfflinePlayer:GreenJon".getBytes(StandardCharsets.UTF_8)), new UUID(mostSignificant, leastSignificant));
 
         // Username
-        int usernameLength = 0;
-        int position = 0;
-        while (true) {
-            byte currentByte = (byte) inputStream.read();
-            usernameLength |= (currentByte & 0x7F) << position;
-            if ((currentByte & 0x80) == 0) break;
-            position += 7;
-        }
+        int usernameLength = readVarInt(inputStream);
         byte[] usernameBytes = new byte[usernameLength];
         inputStream.read(usernameBytes);
         String username = new String(usernameBytes, StandardCharsets.UTF_8);
         Assert.assertEquals(username, "GreenJon");
 
         // Properties
-        int numberOfProperties = 0;
-        position = 0;
-        while (true) {
-            byte currentByte = (byte) inputStream.read();
-            numberOfProperties |= (currentByte & 0x7F) << position;
-            if ((currentByte & 0x80) == 0) break;
-            position += 7;
-        }
+        int numberOfProperties = readVarInt(inputStream);
 
         for (int i=0; i<numberOfProperties; i++) {
-            int keyLength = 0;
-            position = 0;
-            while (true) {
-                byte currentByte = (byte) inputStream.read();
-                keyLength |= (currentByte & 0x7F) << position;
-                if ((currentByte & 0x80) == 0) break;
-                position += 7;
-            }
+            int keyLength = readVarInt(inputStream);
             byte[] keyBytes = new byte[keyLength];
             inputStream.read(keyBytes);
             String key = new String(keyBytes, StandardCharsets.UTF_8);
 
-            int valueLength = 0;
-            position = 0;
-            while (true) {
-                byte currentByte = (byte) inputStream.read();
-                valueLength |= (currentByte & 0x7F) << position;
-                if ((currentByte & 0x80) == 0) break;
-                position += 7;
-            }
+            int valueLength = readVarInt(inputStream);
             byte[] valueBytes = new byte[valueLength];
             inputStream.read(valueBytes);
             String value = new String(valueBytes, StandardCharsets.UTF_8);
@@ -139,14 +109,7 @@ public class Login_Cracked {
 
             boolean hasSignatureData = inputStream.read() == 1;
             if (hasSignatureData) {
-                int signatureDataLength = 0;
-                position = 0;
-                while (true) {
-                    byte currentByte = (byte) inputStream.read();
-                    signatureDataLength |= (currentByte & 0x7F) << position;
-                    if ((currentByte & 0x80) == 0) break;
-                    position += 7;
-                }
+                int signatureDataLength = readVarInt(inputStream);
                 byte[] signatureDataBytes = new byte[signatureDataLength];
                 inputStream.read(signatureDataBytes);
                 String signatureData = new String(signatureDataBytes, StandardCharsets.UTF_8);

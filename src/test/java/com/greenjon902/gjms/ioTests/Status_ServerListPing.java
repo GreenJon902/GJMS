@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import static com.greenjon902.gjms.Utils.byteArray;
+import static com.greenjon902.gjms.Utils.readVarInt;
 
 public class Status_ServerListPing {
     private final String ip = "127.0.0.1";
@@ -76,23 +77,13 @@ public class Status_ServerListPing {
         // Status Response -
 
         // Packet length
-        while (true) { // TODO: Check packet length
-            byte currentByte = (byte) inputStream.read();
-            if ((currentByte & 0x80) == 0) break;
-        }
+         readVarInt(inputStream); // TODO: Check packet length
 
         // Packet ID
         Assert.assertEquals("Wrong PacketId for StatusResponse", 0, inputStream.read());
 
         // JSON Response
-        int jsonResponseLength = 0;
-        int position = 0;
-        while (true) {
-            byte currentByte = (byte) inputStream.read();
-            jsonResponseLength |= (currentByte & 0x7F) << position;
-            if ((currentByte & 0x80) == 0) break;
-            position += 7;
-        }
+        int jsonResponseLength = readVarInt(inputStream);
         byte[] bytes = new byte[jsonResponseLength];
         inputStream.read(bytes);
         String jsonResponse = new String(bytes, StandardCharsets.UTF_8);
