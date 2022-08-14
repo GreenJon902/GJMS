@@ -18,6 +18,7 @@ public abstract class PacketAdapter {
     private static final int SEGMENT_BITS = 0x7F; // 01111111
     private static final int CONTINUE_BIT = 0x80; // 10000000
     private static final int BYTE_BITS = 0xFF; // 11111111
+    private static final int BOOL_TRUE_BYTES = 0x01; // 00000001
 
     /**
      * Reads the first variable length integer from the players incoming packets.
@@ -44,6 +45,17 @@ public abstract class PacketAdapter {
         }
 
         return value;
+    }
+
+    /**
+     * Reads the first boolean from the connection.
+     *
+     * @param connection The connection where the packet is coming from
+     * @return The boolean that was decoded
+     * @throws IOException If an I/O error occurs
+     */
+    public static boolean decodeFirstBoolean(@NotNull Connection connection) throws IOException {
+        return (connection.inputStream.read() & BOOL_TRUE_BYTES) == 1;
     }
 
     /**

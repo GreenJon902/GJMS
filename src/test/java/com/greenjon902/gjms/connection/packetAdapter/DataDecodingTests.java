@@ -16,7 +16,7 @@ import static com.greenjon902.gjms.Utils.byteArray;
 public class DataDecodingTests {
     @Test
     public void testDecodeVarInt() throws IOException {
-        // Setup ---
+        // Setup --
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00)); // 0
         outputStream.write(byteArray(0x01)); // 1
@@ -56,7 +56,7 @@ public class DataDecodingTests {
 
     @Test
     public void testDecodeString() throws IOException {
-        // Setup ---
+        // Setup --
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(4);
         outputStream.write("test".getBytes(StandardCharsets.UTF_8));
@@ -83,7 +83,7 @@ public class DataDecodingTests {
 
     @Test
     public void testDecodeFirstUnsignedShort() throws IOException {
-        // Setup ---
+        // Setup --
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00, 0x00)); // 0
         outputStream.write(byteArray(0x00, 0x01)); // 1
@@ -115,7 +115,7 @@ public class DataDecodingTests {
 
     @Test
     public void testDecodeFirstLong() throws IOException {
-        // Setup ---
+        // Setup --
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)); // 0
         outputStream.write(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01)); // 1
@@ -155,5 +155,23 @@ public class DataDecodingTests {
         Assert.assertEquals(9223372036854775807L, out[10]);
         Assert.assertEquals(-1L, out[11]);
         Assert.assertEquals(-9223372036854775808L, out[12]);
+    }
+
+    @Test
+    public void testDecodeFirstBoolean() throws IOException {
+        // Setup --
+        InputStream inputStream = new ByteArrayInputStream(byteArray(
+                0x00,
+                0x01
+        ));
+        Connection connection = new Connection(inputStream, null, null);
+
+        // Run --
+        boolean shouldBeFalse = PacketAdapter.decodeFirstBoolean(connection);
+        boolean shouldBeTrue = PacketAdapter.decodeFirstBoolean(connection);
+
+        // Check --
+        Assert.assertFalse(shouldBeFalse);
+        Assert.assertTrue(shouldBeTrue);
     }
 }
