@@ -4,7 +4,9 @@ import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
 
 /**
- * A packet sent from the client that contains information about the version of the client and why it's connecting.
+ * A packet sent from the client that contains information about the version of the client ({@link #protocolVersion})
+ * and why it's connecting ({@link #nextState}). This also includes the address the client connected to
+ * ({@link #serverAddress}, {@link #port}).
  */
 public class HandshakePacket implements ServerboundPacket {
     public final int protocolVersion;

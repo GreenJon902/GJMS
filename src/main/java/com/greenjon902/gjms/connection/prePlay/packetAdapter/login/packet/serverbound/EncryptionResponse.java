@@ -3,7 +3,11 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serve
 import com.greenjon902.gjms.connection.ServerboundPacket;
 
 import java.util.Arrays;
-
+/**
+ * A packet sent from the client that contains the client's message encryption information. There are two forms of this,
+ * there can either be a {@link #sharedSecret} and a {@link #verifyToken} or there can be a {@link #sharedSecret}, a
+ * {@link #salt} and a {@link #messageSignature}.
+ */
 public class EncryptionResponse implements ServerboundPacket {
     public final byte[] sharedSecret;
     public final byte[] verifyToken;

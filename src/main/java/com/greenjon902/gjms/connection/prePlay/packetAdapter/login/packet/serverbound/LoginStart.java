@@ -5,6 +5,9 @@ import com.greenjon902.gjms.connection.ServerboundPacket;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * A packet sent from the client that contains the client's name and encryption information (optional).
+ */
 public class LoginStart implements ServerboundPacket {
     public final String name;
     public final Long timestamp;
