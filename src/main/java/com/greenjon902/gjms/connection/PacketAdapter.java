@@ -59,6 +59,21 @@ public abstract class PacketAdapter {
     }
 
     /**
+     * Reads the byte array from the connection, it will also read the first varInt as that signifies the length of the
+     * array.
+     *
+     * @param connection The connection where the packet is coming from
+     * @return The byte[] that was decoded
+     * @throws IOException If an I/O error occurs
+     */
+    public static byte[] decodeFirstByteArray(@NotNull Connection connection) throws IOException {
+        int length = decodeFirstVarInt(connection);
+        byte[] content = new byte[length];
+        connection.inputStream.read(content);
+        return content;
+    }
+
+    /**
      * Encodes an integer as a varInt in a byte array.
      * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.

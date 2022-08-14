@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static com.greenjon902.gjms.Utils.byteArray;
 
@@ -173,5 +174,26 @@ public class DataDecodingTests {
         // Check --
         Assert.assertFalse(shouldBeFalse);
         Assert.assertTrue(shouldBeTrue);
+    }
+
+    @Test
+    public void testDecodeFirstByteArray() throws IOException {
+        // Setup --
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(byteArray(0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)); // 15 length -> 0x0F
+        outputStream.write(byteArray(0x04, 0x12, 0x34, 0xBA, 0xBE));
+        outputStream.write(byteArray(0x00));
+        InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        Connection connection = new Connection(inputStream, null, null);
+
+        // Run --
+        byte[] out1 = PacketAdapter.decodeFirstByteArray(connection);
+        byte[] out2 = PacketAdapter.decodeFirstByteArray(connection);
+        byte[] out3 = PacketAdapter.decodeFirstByteArray(connection);
+
+        // Check --
+        Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), out1);
+        Assert.assertArrayEquals(byteArray(0x12, 0x34, 0xBA, 0xBE), out2);
+        Assert.assertArrayEquals(new byte[0], out3);
     }
 }
