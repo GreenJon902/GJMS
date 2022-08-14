@@ -4,6 +4,8 @@ import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serverbound.LoginStart;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound.PingResponse;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound.StatusResponse;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.PingRequest;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Handles connections from clients who are not in the play state.It is given connections by the
@@ -93,7 +96,24 @@ public class PrePlayConnectionHandler {
                 }
             }
             case LOGIN -> {
-                if (false) {
+                if (packet instanceof LoginStart loginStart) {
+                    connection.storage.name = loginStart.name;
+                    if (loginStart.hasSignatureData()) {
+                        connection.storage.timestamp = loginStart.timestamp;
+                        connection.storage.publicKey = loginStart.publicKey;
+                        connection.storage.signature = loginStart.signature;
+                    }
+
+                    if (connection.cracked) {
+                        LoginSuccess response = new LoginSuccess(
+                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + connection.storage.name).getBytes()),
+                                connection.storage.name,
+                                new LoginSuccess.Property[0]);
+                        connection.getPacketAdapter().sendPacket(response, connection);
+
+                    } else {
+                        throw new RuntimeException("Non-cracked logging in has not yet been implemented");
+                    }
 
                 } else {
                     throw new RuntimeException("Clients in the Login state can only send LoginStart or " +

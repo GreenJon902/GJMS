@@ -15,7 +15,8 @@ public class PrePlayConnection extends Connection {
     private int protocolVersion = -1; // by default is not set, is editable in prePlay as we don't know it yet
     private PacketAdapter packetAdapter;
     private PrePlayConnectionState prePlayConnectionState = PrePlayConnectionState.HANDSHAKE;
-    private final boolean cracked;
+    public final boolean cracked;
+    public final Storage storage = new Storage();
 
     public PrePlayConnection(Socket socket, boolean cracked) throws IOException {
         super(socket);
@@ -64,4 +65,14 @@ public class PrePlayConnection extends Connection {
         this.prePlayConnectionState = state;
         this.protocolVersion = protocolVersion;
     }
+}
+
+/**
+ * A container class to store information given by the client for when they move to the play state.
+ */
+class Storage {
+    public String name;
+    public long timestamp;
+    public byte[] publicKey;
+    public byte[] signature;
 }
