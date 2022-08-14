@@ -19,8 +19,8 @@ public class Utils {
      * Make a server on any port.
      * @return The port
      */
-    public static int makeServer() {
-        NewConnectionHandler socketManager = new NewConnectionHandler();
+    public static int makeServer(boolean cracked) {
+        NewConnectionHandler socketManager = new NewConnectionHandler(cracked);
         socketManager.start();
         PrePlayConnectionHandler.startNewHandler();
         return socketManager.getPort();

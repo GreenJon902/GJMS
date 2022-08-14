@@ -20,7 +20,7 @@ public class Status_ServerListPing {
     @Test
     public void MC1_19() throws IOException {
         // Setup ---
-        int port = Utils.makeServer();
+        int port = Utils.makeServer(true);
         System.out.println("Got port " + port);
         Socket socket = new Socket(ip, port);
         InputStream inputStream = socket.getInputStream();

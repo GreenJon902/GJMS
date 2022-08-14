@@ -13,8 +13,10 @@ import java.net.Socket;
 public class NewConnectionHandler {
     private final int port;
     private final ServerSocket serverSocket;
+    private boolean cracked;
 
-    public NewConnectionHandler(int port) {
+    public NewConnectionHandler(int port, boolean cracked) {
+        this.cracked = cracked;
         try {
             serverSocket = new ServerSocket(port);
             this.port = serverSocket.getLocalPort(); // May be allocated by java if port argument was 0
@@ -23,8 +25,8 @@ public class NewConnectionHandler {
         }
     }
 
-    public NewConnectionHandler() {
-        this(0); // Start server on a free port that's allocated by java
+    public NewConnectionHandler(boolean cracked) {
+        this(0, cracked); // Start server on a free port that's allocated by java
     }
 
     public int getPort() {
@@ -41,7 +43,7 @@ public class NewConnectionHandler {
                     Socket connection = serverSocket.accept();
                     System.out.println("Incoming connection from " + connection.getInetAddress() + ":" + connection.getPort());
 
-                    PrePlayConnection prePlayConnection = new PrePlayConnection(connection);
+                    PrePlayConnection prePlayConnection = new PrePlayConnection(connection, cracked);
                         PrePlayConnectionHandler.addConnection(prePlayConnection);
 
                 } catch (Exception e) {

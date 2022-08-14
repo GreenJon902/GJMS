@@ -15,9 +15,11 @@ public class PrePlayConnection extends Connection {
     private int protocolVersion = -1; // by default is not set, is editable in prePlay as we don't know it yet
     private PacketAdapter packetAdapter;
     private PrePlayConnectionState prePlayConnectionState = PrePlayConnectionState.HANDSHAKE;
+    private final boolean cracked;
 
-    public PrePlayConnection(Socket socket) throws IOException {
+    public PrePlayConnection(Socket socket, boolean cracked) throws IOException {
         super(socket);
+        this.cracked = cracked;
         updatePacketAdaptor(PrePlayConnectionState.HANDSHAKE, -1);
     }
 
@@ -56,7 +58,8 @@ public class PrePlayConnection extends Connection {
      * @param protocolVersion The connection's protocol version
      */
     public void updatePacketAdaptor(PrePlayConnectionState state, int protocolVersion) {
-        System.out.println("Updating packetAdapter for self - " + this + " | state=" + state + " protocolVersion=" + protocolVersion);
+        System.out.println("Updating packetAdapter for self - " + this + " | state=" + state + " protocolVersion=" +
+                protocolVersion);
         this.packetAdapter = PrePlayPacketAdapterSelector.selectAdapter(state, protocolVersion);
         this.prePlayConnectionState = state;
         this.protocolVersion = protocolVersion;

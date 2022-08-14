@@ -8,7 +8,7 @@ public class GJMS {
         System.out.println("GJMS Starting...");
         System.out.println("Version is 1.0-SNAPSHOT");
 
-        NewConnectionHandler socketManager = new NewConnectionHandler(25565);
+        NewConnectionHandler socketManager = new NewConnectionHandler(25565, false);
         socketManager.start();
         PrePlayConnectionHandler.startNewHandler();
     }
