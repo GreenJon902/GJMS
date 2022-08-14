@@ -161,6 +161,30 @@ public abstract class PacketAdapter {
     }
 
     /**
+     * Encodes a byte[] by prefixing it with its length.
+     *
+     * @param byteArray The bytes to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodeBytes(byte[] byteArray) {
+        byte[] length = encodeVarInt(byteArray.length);
+        byte[] bytes = new byte[byteArray.length + length.length];
+        System.arraycopy(length, 0, bytes, 0, length.length);
+        System.arraycopy(byteArray, 0, bytes, length.length, byteArray.length);
+        return bytes;
+    }
+
+    /**
+     * Encodes a string by turning it into bytes and prefixing it with its length.
+     *
+     * @param string The string to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodeString(String string) {
+        return encodeBytes(string.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
      * Gets the first packet from a connection.
      *
      * @param connection The connection where the packet is coming from

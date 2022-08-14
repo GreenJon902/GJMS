@@ -9,7 +9,7 @@ import static com.greenjon902.gjms.Utils.byteArray;
 public class DataEncodingTests {
     @Test
     public void testEncodeVarInt() {
-        // Check --
+        // Run + Check --
         Assert.assertArrayEquals(byteArray(0x00), PacketAdapter.encodeVarInt(0));
         Assert.assertArrayEquals(byteArray(0x01), PacketAdapter.encodeVarInt(1));
         Assert.assertArrayEquals(byteArray(0x02), PacketAdapter.encodeVarInt(2));
@@ -25,7 +25,7 @@ public class DataEncodingTests {
 
     @Test
     public void testEncodeLong() {
-        // Check --
+        // Run + Check --
         Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), PacketAdapter.encodeLong(0L));
         Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), PacketAdapter.encodeLong(1L));
         Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00), PacketAdapter.encodeLong(256L));
@@ -39,5 +39,21 @@ public class DataEncodingTests {
         Assert.assertArrayEquals(byteArray(0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF), PacketAdapter.encodeLong(9223372036854775807L));
         Assert.assertArrayEquals(byteArray(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF), PacketAdapter.encodeLong(-1L));
         Assert.assertArrayEquals(byteArray(0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), PacketAdapter.encodeLong(-9223372036854775808L));
+    }
+
+    @Test
+    public void testEncodeString() {
+        // Run + Check --
+        Assert.assertArrayEquals(byteArray(0x05, 'H', 'e', 'l', 'l', 'o'), PacketAdapter.encodeString("Hello"));
+        Assert.assertArrayEquals(byteArray(0x0C, 'H', 'o', 'w', ' ', 'a', 'r', 'e', ' ', 'y', 'o', 'u', '?'), PacketAdapter.encodeString("How are you?"));
+        Assert.assertArrayEquals(byteArray(0x00), PacketAdapter.encodeString(""));
+    }
+
+    @Test
+    public void testEncodeByteArray() {
+        // Run + Check --
+        Assert.assertArrayEquals(byteArray(0x0B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), PacketAdapter.encodeBytes(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)));
+        Assert.assertArrayEquals(byteArray(0x04, 0x05, 0xAA, 0xF3, 0xFD), PacketAdapter.encodeBytes(byteArray(0x05, 0xAA, 0xF3, 0xFD)));
+        Assert.assertArrayEquals(byteArray(0x00), PacketAdapter.encodeBytes(new byte[0]));
     }
 }
