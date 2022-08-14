@@ -15,13 +15,16 @@ public class NewConnectionHandler {
     private final ServerSocket serverSocket;
 
     public NewConnectionHandler(int port) {
-        this.port = port;
         try {
             serverSocket = new ServerSocket(port);
+            this.port = serverSocket.getLocalPort(); // May be allocated by java if port argument was 0
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public NewConnectionHandler() {
+        this(0); // Start server on a free port that's allocated by java
     }
 
     public int getPort() {

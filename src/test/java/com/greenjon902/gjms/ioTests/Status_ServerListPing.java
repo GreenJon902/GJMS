@@ -1,5 +1,6 @@
 package com.greenjon902.gjms.ioTests;
 
+import com.greenjon902.gjms.Utils;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
 import org.junit.Assert;
@@ -14,19 +15,13 @@ import java.nio.charset.StandardCharsets;
 import static com.greenjon902.gjms.Utils.byteArray;
 
 public class Status_ServerListPing {
-    public final String ip = "127.0.0.1";
-    public final short port = 25565;
-
-    public void makeServer() {
-        NewConnectionHandler socketManager = new NewConnectionHandler(port);
-        socketManager.start();
-        PrePlayConnectionHandler.startNewHandler();
-    }
+    private final String ip = "127.0.0.1";
 
     @Test
     public void MC1_19() throws IOException {
         // Setup ---
-        makeServer();
+        int port = Utils.makeServer();
+        System.out.println("Got port " + port);
         Socket socket = new Socket(ip, port);
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
