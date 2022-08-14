@@ -2,9 +2,9 @@ package com.greenjon902.gjms.ioTests;
 
 import com.greenjon902.gjms.Utils;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import static com.greenjon902.gjms.Utils.byteArray;
 import static com.greenjon902.gjms.Utils.readVarInt;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class Status_ServerListPing {
     private final String ip = "127.0.0.1";
 
@@ -80,7 +81,7 @@ public class Status_ServerListPing {
          readVarInt(inputStream); // TODO: Check packet length
 
         // Packet ID
-        Assert.assertEquals("Wrong PacketId for StatusResponse", 0, inputStream.read());
+        Assertions.assertEquals(0, inputStream.read(), "Wrong PacketId for StatusResponse");
 
         // JSON Response
         int jsonResponseLength = readVarInt(inputStream);
@@ -94,10 +95,10 @@ public class Status_ServerListPing {
         // Ping Response -
 
         // Packet length
-        Assert.assertEquals("Wrong PacketLength for PingResponse", 9, inputStream.read());
+        Assertions.assertEquals(9, inputStream.read(), "Wrong PacketLength for PingResponse");
 
         // Packet ID
-        Assert.assertEquals("Wrong PacketId for PingResponse", 1, inputStream.read());
+        Assertions.assertEquals(1, inputStream.read(), "Wrong PacketId for PingResponse");
 
         // Payload
         long payload = 0;
@@ -105,6 +106,6 @@ public class Status_ServerListPing {
             payload <<= 8;
             payload |= inputStream.read() & 0xFF;
         }
-        Assert.assertEquals("Wrong Payload for PingResponse", currentTime, payload);
+        Assertions.assertEquals(currentTime, payload, "Wrong Payload for PingResponse");
     }
 }

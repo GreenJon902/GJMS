@@ -2,8 +2,8 @@ package com.greenjon902.gjms.connection.packetAdapter;
 
 import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.PacketAdapter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,17 +42,17 @@ public class DataDecodingTests {
         }
 
         // Check --
-        Assert.assertEquals(0, out[0]);
-        Assert.assertEquals(1, out[1]);
-        Assert.assertEquals(2, out[2]);
-        Assert.assertEquals(127, out[3]);
-        Assert.assertEquals(128, out[4]);
-        Assert.assertEquals(255, out[5]);
-        Assert.assertEquals(25565, out[6]);
-        Assert.assertEquals(2097151, out[7]);
-        Assert.assertEquals(2147483647, out[8]);
-        Assert.assertEquals(-1, out[9]);
-        Assert.assertEquals(-2147483648, out[10]);
+        Assertions.assertEquals(0, out[0]);
+        Assertions.assertEquals(1, out[1]);
+        Assertions.assertEquals(2, out[2]);
+        Assertions.assertEquals(127, out[3]);
+        Assertions.assertEquals(128, out[4]);
+        Assertions.assertEquals(255, out[5]);
+        Assertions.assertEquals(25565, out[6]);
+        Assertions.assertEquals(2097151, out[7]);
+        Assertions.assertEquals(2147483647, out[8]);
+        Assertions.assertEquals(-1, out[9]);
+        Assertions.assertEquals(-2147483648, out[10]);
     }
 
     @Test
@@ -77,9 +77,9 @@ public class DataDecodingTests {
         }
 
         // Check --
-        Assert.assertEquals("test", out[0]);
-        Assert.assertEquals("i did not fail my english exam", out[1]);
-        Assert.assertEquals("Hello, how are you my guy?", out[2]);
+        Assertions.assertEquals("test", out[0]);
+        Assertions.assertEquals("i did not fail my english exam", out[1]);
+        Assertions.assertEquals("Hello, how are you my guy?", out[2]);
     }
 
     @Test
@@ -105,13 +105,13 @@ public class DataDecodingTests {
         }
 
         // Check --
-        Assert.assertEquals(0, out[0]);
-        Assert.assertEquals(1, out[1]);
-        Assert.assertEquals(256, out[2]);
-        Assert.assertEquals(257, out[3]);
-        Assert.assertEquals(32767, out[4]);
-        Assert.assertEquals(32768, out[5]);
-        Assert.assertEquals(65535, out[6]);
+        Assertions.assertEquals(0, out[0]);
+        Assertions.assertEquals(1, out[1]);
+        Assertions.assertEquals(256, out[2]);
+        Assertions.assertEquals(257, out[3]);
+        Assertions.assertEquals(32767, out[4]);
+        Assertions.assertEquals(32768, out[5]);
+        Assertions.assertEquals(65535, out[6]);
     }
 
     @Test
@@ -143,19 +143,19 @@ public class DataDecodingTests {
         }
 
         // Check --
-        Assert.assertEquals(0L, out[0]);
-        Assert.assertEquals(1L, out[1]);
-        Assert.assertEquals(256L, out[2]);
-        Assert.assertEquals(65536L, out[3]);
-        Assert.assertEquals(16777216L, out[4]);
-        Assert.assertEquals(4294967296L, out[5]);
-        Assert.assertEquals(1099511627776L, out[6]);
-        Assert.assertEquals(281474976710656L, out[7]);
-        Assert.assertEquals(72057594037927936L, out[8]);
-        Assert.assertEquals(72340172838076673L, out[9]);
-        Assert.assertEquals(9223372036854775807L, out[10]);
-        Assert.assertEquals(-1L, out[11]);
-        Assert.assertEquals(-9223372036854775808L, out[12]);
+        Assertions.assertEquals(0L, out[0]);
+        Assertions.assertEquals(1L, out[1]);
+        Assertions.assertEquals(256L, out[2]);
+        Assertions.assertEquals(65536L, out[3]);
+        Assertions.assertEquals(16777216L, out[4]);
+        Assertions.assertEquals(4294967296L, out[5]);
+        Assertions.assertEquals(1099511627776L, out[6]);
+        Assertions.assertEquals(281474976710656L, out[7]);
+        Assertions.assertEquals(72057594037927936L, out[8]);
+        Assertions.assertEquals(72340172838076673L, out[9]);
+        Assertions.assertEquals(9223372036854775807L, out[10]);
+        Assertions.assertEquals(-1L, out[11]);
+        Assertions.assertEquals(-9223372036854775808L, out[12]);
     }
 
     @Test
@@ -172,8 +172,8 @@ public class DataDecodingTests {
         boolean shouldBeTrue = PacketAdapter.decodeFirstBoolean(connection);
 
         // Check --
-        Assert.assertFalse(shouldBeFalse);
-        Assert.assertTrue(shouldBeTrue);
+        Assertions.assertFalse(shouldBeFalse);
+        Assertions.assertTrue(shouldBeTrue);
     }
 
     @Test
@@ -192,8 +192,8 @@ public class DataDecodingTests {
         byte[] out3 = PacketAdapter.decodeFirstByteArray(connection);
 
         // Check --
-        Assert.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), out1);
-        Assert.assertArrayEquals(byteArray(0x12, 0x34, 0xBA, 0xBE), out2);
-        Assert.assertArrayEquals(new byte[0], out3);
+        Assertions.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), out1);
+        Assertions.assertArrayEquals(byteArray(0x12, 0x34, 0xBA, 0xBE), out2);
+        Assertions.assertArrayEquals(new byte[0], out3);
     }
 }

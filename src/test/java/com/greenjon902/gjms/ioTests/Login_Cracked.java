@@ -1,8 +1,9 @@
 package com.greenjon902.gjms.ioTests;
 
 import com.greenjon902.gjms.Utils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import static com.greenjon902.gjms.Utils.byteArray;
 import static com.greenjon902.gjms.Utils.readVarInt;
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class Login_Cracked {
     private final String ip = "127.0.0.1";
 
@@ -69,7 +71,7 @@ public class Login_Cracked {
         readVarInt(inputStream); // TODO: Check packet length
 
         // Packet ID
-        Assert.assertEquals("Wrong PacketId for LoginSuccess", 0x02, inputStream.read());
+        Assertions.assertEquals(0x02, inputStream.read(), "Wrong PacketId for LoginSuccess");
 
         // UUID
         long mostSignificant = 0;
@@ -82,14 +84,14 @@ public class Login_Cracked {
             leastSignificant <<= 8;
             leastSignificant |= inputStream.read() & 0xFF;
         }
-        Assert.assertEquals(UUID.nameUUIDFromBytes("OfflinePlayer:GreenJon".getBytes(StandardCharsets.UTF_8)), new UUID(mostSignificant, leastSignificant));
+        Assertions.assertEquals(UUID.nameUUIDFromBytes("OfflinePlayer:GreenJon".getBytes(StandardCharsets.UTF_8)), new UUID(mostSignificant, leastSignificant));
 
         // Username
         int usernameLength = readVarInt(inputStream);
         byte[] usernameBytes = new byte[usernameLength];
         inputStream.read(usernameBytes);
         String username = new String(usernameBytes, StandardCharsets.UTF_8);
-        Assert.assertEquals(username, "GreenJon");
+        Assertions.assertEquals(username, "GreenJon");
 
         // Properties
         int numberOfProperties = readVarInt(inputStream);
