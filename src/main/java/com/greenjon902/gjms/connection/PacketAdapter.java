@@ -284,6 +284,7 @@ public abstract class PacketAdapter {
      * @param connection The connection where the packet is going to
      */
     public void sendPacket(ClientboundPacket packet, Connection connection) throws IOException {
+        System.out.println(packet);
         connection.outputStream.write(encodePacket(packet));
     }
 

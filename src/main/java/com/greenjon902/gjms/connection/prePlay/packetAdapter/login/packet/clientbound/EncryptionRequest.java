@@ -2,6 +2,8 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clien
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
 
+import java.util.Arrays;
+
 public class EncryptionRequest implements ClientboundPacket {
     public final String serverId;
     public final byte[] publicKey;
@@ -27,8 +29,8 @@ public class EncryptionRequest implements ClientboundPacket {
     public String toString() {
         return "EncryptionRequest{" +
                 "serverId=" + serverId +
-                "publicKey=" + publicKey +
-                "verifyToken=" + verifyToken +
+                ", publicKey=" + Arrays.toString(publicKey) +
+                ", verifyToken=" + Arrays.toString(verifyToken) +
                 '}';
     }
 }

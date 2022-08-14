@@ -43,4 +43,14 @@ public class HandshakePacket implements ServerboundPacket {
     public int getPacketId() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "HandshakePacket{" +
+                "protocolVersion=" + protocolVersion +
+                ", serverAddress='" + serverAddress + '\'' +
+                ", port=" + port +
+                ", nextState=" + nextState +
+                '}';
+    }
 }

@@ -48,13 +48,13 @@ public class EncryptionResponse implements ServerboundPacket {
         if (hasVerifyToken()) {
             return "EncryptionResponse{" +
                     "sharedSecret=" + Arrays.toString(sharedSecret) +
-                    "verifyToken=" + Arrays.toString(verifyToken) +
+                    ", verifyToken=" + Arrays.toString(verifyToken) +
                     '}';
         } else {
             return "EncryptionResponse{" +
                     "sharedSecret=" + Arrays.toString(sharedSecret) +
-                    "salt=" + salt +
-                    "messageSignature=" + Arrays.toString(messageSignature) +
+                    ", salt=" + salt +
+                    ", messageSignature=" + Arrays.toString(messageSignature) +
                     '}';
         }
     }

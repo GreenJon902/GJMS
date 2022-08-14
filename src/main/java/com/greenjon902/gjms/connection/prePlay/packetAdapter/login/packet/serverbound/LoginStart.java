@@ -44,9 +44,9 @@ public class LoginStart implements ServerboundPacket {
         if (hasSignatureData()) {
             return "EncryptionRequest{" +
                     "name=" + name +
-                    "timestamp=" + timestamp +
-                    "publicKey=" + Arrays.toString(publicKey) +
-                    "signature=" + Arrays.toString(signature) +
+                    ", timestamp=" + timestamp +
+                    ", publicKey=" + Arrays.toString(publicKey) +
+                    ", signature=" + Arrays.toString(signature) +
                     '}';
         } else {
             return "LoginStart{" +

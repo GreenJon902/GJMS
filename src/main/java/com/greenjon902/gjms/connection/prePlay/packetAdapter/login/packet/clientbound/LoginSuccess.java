@@ -34,13 +34,13 @@ public class LoginSuccess implements ClientboundPacket {
             if (isSigned()) {
                 return "Property{" +
                         "name=" + name + 
-                        "value=" + value +
-                        "signature=" + signature +
+                        ", value=" + value +
+                        ", signature=" + signature +
                         '}';
             } else {
                 return "Property{" + 
                         "name=" + name + 
-                        "value=" + value +
+                        ", value=" + value +
                         '}';
             }
         }
@@ -66,8 +66,8 @@ public class LoginSuccess implements ClientboundPacket {
     public String toString() {
         return "LoginSuccess{" +
                 "uuid=" + uuid +
-                "username=" + username +
-                "properties=" + Arrays.toString(properties) +
+                ", username=" + username +
+                ", properties=" + Arrays.toString(properties) +
                 '}';
     }
 }

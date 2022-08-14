@@ -1,8 +1,9 @@
-package com.greenjon902.gjms.connection.prePlay;
+package com.greenjon902.gjms.prePlay;
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
 import com.greenjon902.gjms.connection.ServerboundPacket;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serverbound.LoginStart;
@@ -72,6 +73,7 @@ public class PrePlayConnectionHandler {
      */
     private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
         ServerboundPacket packet = connection.getPacketAdapter().getFirstPacket(connection);
+        System.out.println(packet);
         switch (connection.getPrePlayConnectionState()) {
             case HANDSHAKE -> {
                 if (!(packet instanceof HandshakePacket handshakePacket)) {
@@ -97,17 +99,17 @@ public class PrePlayConnectionHandler {
             }
             case LOGIN -> {
                 if (packet instanceof LoginStart loginStart) {
-                    connection.storage.name = loginStart.name;
+                    connection.name = loginStart.name;
                     if (loginStart.hasSignatureData()) {
-                        connection.storage.timestamp = loginStart.timestamp;
-                        connection.storage.publicKey = loginStart.publicKey;
-                        connection.storage.signature = loginStart.signature;
+                        connection.timestamp = loginStart.timestamp;
+                        connection.publicKey = loginStart.publicKey;
+                        connection.signature = loginStart.signature;
                     }
 
                     if (connection.cracked) {
                         LoginSuccess response = new LoginSuccess(
-                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + connection.storage.name).getBytes()),
-                                connection.storage.name,
+                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + connection.name).getBytes()),
+                                connection.name,
                                 new LoginSuccess.Property[0]);
                         connection.getPacketAdapter().sendPacket(response, connection);
 
