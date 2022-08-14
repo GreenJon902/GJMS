@@ -7,7 +7,7 @@ public class EncryptionRequest implements ClientboundPacket {
     public final byte[] publicKey;
     public final byte[] verifyKey;
 
-    public EncryptionRequest(String severId, byte[] publicKey, byte[] verifyKey) {
+    public EncryptionRequest(String serverId, byte[] publicKey, byte[] verifyKey) {
         this.serverId = serverId;
         this.publicKey = publicKey;
         this.verifyKey = verifyKey;

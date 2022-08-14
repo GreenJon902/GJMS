@@ -2,9 +2,12 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serve
 
 import com.greenjon902.gjms.connection.ServerboundPacket;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class LoginStart implements ServerboundPacket {
     public final String name;
-    public final long timestamp;
+    public final Long timestamp;
     public final byte[] publicKey;
     public final byte[] signature;
 
@@ -12,15 +15,15 @@ public class LoginStart implements ServerboundPacket {
         this(name, null, null, null);
     }
 
-    public LoginStart(String name, long timestamp, byte[] publicKey, byte[] signature) {
+    public LoginStart(String name, Long timestamp, byte[] publicKey, byte[] signature) {
         this.name = name;
         this.timestamp = timestamp;
-        this.publicKey = publickey;
+        this.publicKey = publicKey;
         this.signature = signature;
     }
 
-    public bool hasSignatureData() {
-        return (timestamp != null);
+    public boolean hasSignatureData() {
+        return (Objects.nonNull(timestamp));
     }
 
     /**
@@ -39,8 +42,8 @@ public class LoginStart implements ServerboundPacket {
             return "EncryptionRequest{" +
                     "name=" + name +
                     "timestamp=" + timestamp +
-                    "publicKey=" + publicKey +
-                    "signature=" + signature +
+                    "publicKey=" + Arrays.toString(publicKey) +
+                    "signature=" + Arrays.toString(signature) +
                     '}';
         } else {
             return "LoginStart{" +

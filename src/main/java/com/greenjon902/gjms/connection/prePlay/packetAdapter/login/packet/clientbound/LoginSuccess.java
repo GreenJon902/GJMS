@@ -2,12 +2,15 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clien
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 public class LoginSuccess implements ClientboundPacket {
     public final UUID uuid;
     public final String username;
     public final Property[] properties;
 
-    public class Property {
+    public static class Property {
         public final String name;
         public final String value;
         public final String signature;
@@ -22,7 +25,7 @@ public class LoginSuccess implements ClientboundPacket {
             this.signature = signature;
         }
 
-        public bool isSigned() {
+        public boolean isSigned() {
             return (signature != null);
         }
 
