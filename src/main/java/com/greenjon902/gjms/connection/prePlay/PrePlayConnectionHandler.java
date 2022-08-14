@@ -69,7 +69,6 @@ public class PrePlayConnectionHandler {
      */
     private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
         ServerboundPacket packet = connection.getPacketAdapter().getFirstPacket(connection);
-        // TODO: Add other PrePlayConnectionStates
         switch (connection.getPrePlayConnectionState()) {
             case HANDSHAKE -> {
                 if (!(packet instanceof HandshakePacket handshakePacket)) {
@@ -78,7 +77,7 @@ public class PrePlayConnectionHandler {
                 connection.updatePacketAdaptor(handshakePacket.nextState, handshakePacket.protocolVersion);
             }
             case STATUS -> {
-                if (packet instanceof StatusRequest) {
+                if (packet instanceof StatusRequest) { // TODO: Get actual data
                     ClientboundPacket response = new StatusResponse("1.19", connection.getProtocolVersion(),
                             12, 3,
                             "[{\"name\":\"GreenJon\",\"id\":\"86f5d3d8-0d4b-4230-9852-77a40baf39bd\"}," +
@@ -93,12 +92,20 @@ public class PrePlayConnectionHandler {
                     throw new RuntimeException("Clients in the STATUS state can only send StatusRequest or PingRequest");
                 }
             }
-            default -> throw new RuntimeException("Only PrePlayConnectionState.HANDSHAKE has been implemented");
+            case LOGIN -> {
+                if (false) {
+
+                } else {
+                    throw new RuntimeException("Clients in the Login state can only send LoginStart or " +
+                            "EncryptionResponse");
+                }
+            }
+            default -> throw new RuntimeException("Unknown PrePlayConnectionState");
         }
     }
 
     /**
-     * Gets all open {@link PrePlayConnection}s, used for testing.
+     * Gets all open {@link PrePlayConnection}s.
      *
      * @return All open connections
      */
