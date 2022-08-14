@@ -24,6 +24,10 @@ public class NewConnectionHandler {
 
     }
 
+    public int getPort() {
+        return port;
+    }
+
     /**
      * Starts the thread that listens to incoming connections.
      */
