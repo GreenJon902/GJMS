@@ -5,12 +5,12 @@ import com.greenjon902.gjms.connection.ClientboundPacket;
 public class EncryptionRequest implements ClientboundPacket {
     public final String serverId;
     public final byte[] publicKey;
-    public final byte[] verifyKey;
+    public final byte[] verifyToken;
 
-    public EncryptionRequest(String serverId, byte[] publicKey, byte[] verifyKey) {
+    public EncryptionRequest(String serverId, byte[] publicKey, byte[] verifyToken) {
         this.serverId = serverId;
         this.publicKey = publicKey;
-        this.verifyKey = verifyKey;
+        this.verifyToken = verifyToken;
     }
 
     /**
@@ -28,7 +28,7 @@ public class EncryptionRequest implements ClientboundPacket {
         return "EncryptionRequest{" +
                 "serverId=" + serverId +
                 "publicKey=" + publicKey +
-                "verifyKey=" + verifyKey +
+                "verifyToken=" + verifyToken +
                 '}';
     }
 }
