@@ -1,5 +1,6 @@
 package com.greenjon902.gjms.connection;
 
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ public abstract class PacketAdapter {
     private static final int SEGMENT_BITS = 0x7F; // 01111111
     private static final int CONTINUE_BIT = 0x80; // 10000000
     private static final int BYTE_BITS = 0xFF; // 11111111
-    private static final int BOOL_TRUE_BYTES = 0x01; // 00000001
+    private static final int BOOL_TRUE_BITS = 0x01; // 00000001
 
     /**
      * Reads the first variable length integer from the players incoming packets.
@@ -56,7 +57,7 @@ public abstract class PacketAdapter {
      * @throws IOException If an I/O error occurs
      */
     public static boolean decodeFirstBoolean(@NotNull Connection connection) throws IOException {
-        return (connection.inputStream.read() & BOOL_TRUE_BYTES) == 1;
+        return (connection.inputStream.read() & BOOL_TRUE_BITS) == 1;
     }
 
     /**
@@ -186,6 +187,16 @@ public abstract class PacketAdapter {
     }
 
     /**
+     * Encodes a boolean by  turning it into bytes.
+     *
+     * @param value The boolean to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodeBoolean(boolean value) {
+        return new byte[] {(byte) (value ? 0x01 : 0x00)};
+    }
+
+    /**
      * Encodes a UUID by turning it into 16 bytes / two unsigned longs.
      *
      * @param uuid The uuid to be encoded
@@ -200,6 +211,62 @@ public abstract class PacketAdapter {
         System.arraycopy(leastSignificant, 0, bytes, 8, 8);
 
         return bytes;
+    }
+
+    /**
+     * Encodes a {@link LoginSuccess.Property}.
+     *
+     * @param property The property to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodeProperty(LoginSuccess.Property property) {
+        byte[] name = encodeString(property.name);
+        byte[] value = encodeString(property.value);
+        byte[] isSigned = encodeBoolean(property.isSigned());
+        byte[] signature; // 0 length if not signed
+
+        if (property.isSigned()) {
+            signature = encodeString(property.signature);
+        } else {
+            signature = new byte[0];
+        }
+
+        byte[] bytes = new byte[name.length + value.length + isSigned.length + signature.length];
+        System.arraycopy(name, 0, bytes, 0, name.length);
+        System.arraycopy(value, 0, bytes, name.length, value.length);
+        System.arraycopy(isSigned, 0, bytes, name.length + value.length, isSigned.length);
+        System.arraycopy(signature, 0, bytes, name.length + value.length + isSigned.length, signature.length);
+
+        return bytes;
+    }
+
+    /**
+     * Encodes a {@link LoginSuccess.Property} array.
+     *
+     * @param properties The properties to be encoded
+     * @return The bytes that were got
+     */
+    public static byte[] encodePropertyArray(LoginSuccess.Property[] properties) {
+        // We don't know what the full length is yet, so we can't make the final array
+        byte[][] encodedIndividualProperties = new byte[properties.length][];
+        int totalLength = 0;
+        for (int i=0; i < properties.length; i++) {
+            byte[] encodedProperty = encodeProperty(properties[i]);
+            encodedIndividualProperties[i] = encodedProperty;
+            totalLength += encodedProperty.length;
+        }
+
+        byte[] encodedTotalLength = encodeVarInt(totalLength);
+        byte[] encodedProperties = new byte[encodedTotalLength.length + totalLength];
+        System.arraycopy(encodedTotalLength, 0, encodedProperties, 0, encodedTotalLength.length);
+
+        int offset = encodedTotalLength.length;
+        for (byte[] encodedProperty : encodedIndividualProperties) {
+            System.arraycopy(encodedProperty, 0, encodedProperties, offset, encodedProperty.length);
+            offset += encodedProperty.length;
+        }
+
+        return encodedProperties;
     }
 
     /**
