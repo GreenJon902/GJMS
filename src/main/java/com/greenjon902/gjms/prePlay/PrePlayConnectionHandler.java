@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Handles connections from clients who are not in the play state.It is given connections by the
+ * Handles connections from clients who are not in the play state. It is given connections by the
  * {@link NewConnectionHandler}.
  */
 public class PrePlayConnectionHandler {
