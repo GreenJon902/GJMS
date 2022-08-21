@@ -57,7 +57,7 @@ public class Status_ServerListPing {
 
                 // Ping Request -------------------------
                 // Length - VarInt
-                0x03, // 00000003
+                0x09, // 00000003
                 // Packet ID - VarInt
                 0x01, // 00000001
                 // Payload - Long

@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -238,29 +239,12 @@ public abstract class PacketAdapter {
     /**
      * Reads the next packet bytes into a byte[]
      */
-    public byte[] readNextPacket(Connection connection) throws IOException {
+    public byte[] readNextPacketFrom(Connection connection) throws IOException {
         int length = decodeFirstVarInt(connection.inputStream);
         return connection.inputStream.readNBytes(length);
     }
 
     public abstract ServerboundPacket decodePacket(InputStream inputStream) throws IOException;
 
-    /**
-     * Sends a packet to the given connection.
-     *
-     * @param packet The packet that is being sent
-     * @param connection The connection where the packet is going to
-     */
-    public void sendPacket(ClientboundPacket packet, Connection connection) throws IOException {
-        System.out.println(packet);
-        connection.outputStream.write(encodePacket(packet));
-    }
-
-    /**
-     * Encodes a packet
-     *
-     * @param packet The packet that is encoded
-     * @return The encoded packet
-     */
-    protected abstract byte[] encodePacket(ClientboundPacket packet);
+    public abstract byte[] encodePacket(ClientboundPacket clientboundPacket);
 }

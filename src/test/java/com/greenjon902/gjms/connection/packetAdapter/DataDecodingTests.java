@@ -1,7 +1,6 @@
 package com.greenjon902.gjms.connection.packetAdapter;
 
-import com.greenjon902.gjms.connection.Connection;
-import com.greenjon902.gjms.connection.PacketAdapter;
+import com.greenjon902.gjms.TestPacketAdapter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static com.greenjon902.gjms.Utils.byteArray;
 
@@ -32,13 +30,12 @@ public class DataDecodingTests {
         outputStream.write(byteArray(0x80, 0x80, 0x80, 0x80, 0x08)); // -2147483648
 
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        Connection connection = new Connection(inputStream, null, null);
 
         int[] out = new int[11];
 
         // Run --
         for (int i=0; i<11; i++) {
-            out[i] = PacketAdapter.decodeFirstVarInt(connection);
+            out[i] = TestPacketAdapter.instance.decodeFirstVarInt(inputStream);
         }
 
         // Check --
@@ -67,13 +64,12 @@ public class DataDecodingTests {
         outputStream.write("Hello, how are you my guy?".getBytes(StandardCharsets.UTF_8));
 
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        Connection connection = new Connection(inputStream, null, null);
 
         String[] out = new String[3];
 
         // Run --
         for (int i=0; i<3; i++) {
-            out[i] = PacketAdapter.decodeFirstString(connection);
+            out[i] = TestPacketAdapter.instance.decodeFirstString(inputStream);
         }
 
         // Check --
@@ -95,13 +91,12 @@ public class DataDecodingTests {
         outputStream.write(byteArray(0xFF, 0xFF)); // 65535
 
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        Connection connection = new Connection(inputStream, null, null);
 
         int[] out = new int[7];
 
         // Run --
         for (int i=0; i<7; i++) {
-            out[i] = PacketAdapter.decodeFirstUnsignedShort(connection);
+            out[i] = TestPacketAdapter.instance.decodeFirstUnsignedShort(inputStream);
         }
 
         // Check --
@@ -133,13 +128,12 @@ public class DataDecodingTests {
         outputStream.write(byteArray(0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)); // -9223372036854775808
 
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        Connection connection = new Connection(inputStream, null, null);
 
         long[] out = new long[13];
 
         // Run --
         for (int i=0; i<13; i++) {
-            out[i] = PacketAdapter.decodeFirstLong(connection);
+            out[i] = TestPacketAdapter.instance.decodeFirstLong(inputStream);
         }
 
         // Check --
@@ -165,11 +159,10 @@ public class DataDecodingTests {
                 0x00,
                 0x01
         ));
-        Connection connection = new Connection(inputStream, null, null);
 
         // Run --
-        boolean shouldBeFalse = PacketAdapter.decodeFirstBoolean(connection);
-        boolean shouldBeTrue = PacketAdapter.decodeFirstBoolean(connection);
+        boolean shouldBeFalse = TestPacketAdapter.instance.decodeFirstBoolean(inputStream);
+        boolean shouldBeTrue = TestPacketAdapter.instance.decodeFirstBoolean(inputStream);
 
         // Check --
         Assertions.assertFalse(shouldBeFalse);
@@ -184,12 +177,11 @@ public class DataDecodingTests {
         outputStream.write(byteArray(0x04, 0x12, 0x34, 0xBA, 0xBE));
         outputStream.write(byteArray(0x00));
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        Connection connection = new Connection(inputStream, null, null);
 
         // Run --
-        byte[] out1 = PacketAdapter.decodeFirstByteArray(connection);
-        byte[] out2 = PacketAdapter.decodeFirstByteArray(connection);
-        byte[] out3 = PacketAdapter.decodeFirstByteArray(connection);
+        byte[] out1 = TestPacketAdapter.instance.decodeFirstByteArray(inputStream);
+        byte[] out2 = TestPacketAdapter.instance.decodeFirstByteArray(inputStream);
+        byte[] out3 = TestPacketAdapter.instance.decodeFirstByteArray(inputStream);
 
         // Check --
         Assertions.assertArrayEquals(byteArray(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), out1);

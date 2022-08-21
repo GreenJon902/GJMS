@@ -31,7 +31,7 @@ public class HandshakePacketAdapter extends PrePlayPacketAdapter {
     }
 
     @Override
-    protected byte[] encodePacket(ClientboundPacket packet) {
+    public byte[] encodePacket(ClientboundPacket packet) {
         throw new RuntimeException("HandshakePacketAdapter has no clientbound packets");
     }
 }

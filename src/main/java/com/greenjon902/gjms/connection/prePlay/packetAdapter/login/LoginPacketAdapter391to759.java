@@ -56,7 +56,7 @@ public class LoginPacketAdapter391to759 extends PrePlayPacketAdapter {
     }
 
     @Override
-    protected byte[] encodePacket(ClientboundPacket packet) {
+    public byte[] encodePacket(ClientboundPacket packet) {
         byte[] content;
 
         if (packet instanceof EncryptionRequest encryptionRequest) {

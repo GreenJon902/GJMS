@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 public class StatusPacketAdapter0to759 extends PrePlayPacketAdapter {
     @Override
     public ServerboundPacket decodePacket(InputStream inputStream) throws IOException {
-        int packetLength = decodeFirstVarInt(inputStream);
         int packetId = decodeFirstVarInt(inputStream);
 
         switch (packetId) {
@@ -36,7 +35,7 @@ public class StatusPacketAdapter0to759 extends PrePlayPacketAdapter {
     }
 
     @Override
-    protected byte[] encodePacket(ClientboundPacket packet) {
+    public byte[] encodePacket(ClientboundPacket packet) {
         byte[] content;
 
         if (packet instanceof StatusResponse statusResponse) {

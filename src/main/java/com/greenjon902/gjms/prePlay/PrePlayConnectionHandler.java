@@ -74,8 +74,7 @@ public class PrePlayConnectionHandler {
      * @param connection The connection where the packet is coming from
      */
     private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
-        InputStream packetData = new ByteArrayInputStream(connection.getPacketAdapter().readNextPacket(connection));
-        ServerboundPacket packet = connection.getPacketAdapter().decodePacket(packetData);
+        ServerboundPacket packet = connection.receive();
 
         switch (connection.getPrePlayConnectionState()) {
             case HANDSHAKE -> {
@@ -92,10 +91,10 @@ public class PrePlayConnectionHandler {
                                     "{\"name\":\"AdminJon_\",\"id\":\"0f549ef4-000b-4a9a-8fd2-2c3e7044ea54\"}," +
                                     "{\"name\":\"Dream\",\"id\":\"ec70bcaf-702f-4bb8-b48d-276fa52a780c\"}]",
                             "{\"text\": \"Hello World!\"}", false);
-                    connection.getPacketAdapter().sendPacket(response, connection);
+                    connection.send(response);
                 } else if (packet instanceof PingRequest pingRequest) {
                     ClientboundPacket response = new PingResponse(pingRequest.payload);
-                    connection.getPacketAdapter().sendPacket(response, connection);
+                    connection.send(response);
                 } else {
                     throw new RuntimeException("Clients in the STATUS state can only send StatusRequest or PingRequest");
                 }
@@ -114,7 +113,7 @@ public class PrePlayConnectionHandler {
                                 UUID.nameUUIDFromBytes(("OfflinePlayer:" + connection.name).getBytes()),
                                 connection.name,
                                 new LoginSuccess.Property[0]);
-                        connection.getPacketAdapter().sendPacket(response, connection);
+                        connection.send(response);
 
                     } else {
                         throw new RuntimeException("Non-cracked logging in has not yet been implemented");
