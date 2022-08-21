@@ -65,7 +65,7 @@ public class PrePlayConnectionHandler {
                     }
                 }
             }
-        }).start();
+        }, "PrePlayConnectionHandler").start();
     }
 
     /**

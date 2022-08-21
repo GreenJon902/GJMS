@@ -50,7 +50,7 @@ public class NewConnectionHandler {
                     System.out.println("Failed to accept incoming connection - " + e.getMessage());
                 }
             }
-        }).start();
+        }, "NewConnectionHandler").start();
     }
 
 
