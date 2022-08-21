@@ -5,7 +5,7 @@ import com.greenjon902.gjms.connection.ClientboundPacket;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class LoginSuccess implements ClientboundPacket {
+public class LoginSuccess extends ClientboundPacket {
     public final UUID uuid;
     public final String username;
     public final Property[] properties;
@@ -52,11 +52,6 @@ public class LoginSuccess implements ClientboundPacket {
          this.properties = properties;
     }
 
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
     @Override
     public int getPacketId() {
         return 2;

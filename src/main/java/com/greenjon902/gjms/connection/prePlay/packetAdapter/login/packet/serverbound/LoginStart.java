@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * A packet sent from the client that contains the client's name and encryption information (optional).
  */
-public class LoginStart implements ServerboundPacket {
+public class LoginStart extends ServerboundPacket {
     public final String name;
     public final Long timestamp;
     public final byte[] publicKey;
@@ -29,11 +29,6 @@ public class LoginStart implements ServerboundPacket {
         return (Objects.nonNull(timestamp));
     }
 
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
     @Override
     public int getPacketId() {
         return 0;

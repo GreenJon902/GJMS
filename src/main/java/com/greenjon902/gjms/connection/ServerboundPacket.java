@@ -1,4 +1,4 @@
 package com.greenjon902.gjms.connection;
 
-public interface ServerboundPacket extends Packet {
+public abstract class ServerboundPacket extends Packet {
 }

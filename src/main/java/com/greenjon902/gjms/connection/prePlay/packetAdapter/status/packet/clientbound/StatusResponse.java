@@ -2,7 +2,7 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clie
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
 
-public class StatusResponse implements ClientboundPacket {
+public class StatusResponse extends ClientboundPacket {
     public final String versionName;
     public final int protocolNumber;
 
@@ -36,11 +36,6 @@ public class StatusResponse implements ClientboundPacket {
         this.previewsChat = previewsChat;
     }
 
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
     @Override
     public int getPacketId() {
         return 0;

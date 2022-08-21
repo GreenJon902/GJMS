@@ -2,12 +2,8 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serv
 
 import com.greenjon902.gjms.connection.ServerboundPacket;
 
-public class StatusRequest implements ServerboundPacket {
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
+public class StatusRequest extends ServerboundPacket {
+
     @Override
     public int getPacketId() {
         return 0;

@@ -8,7 +8,7 @@ import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
  * and why it's connecting ({@link #nextState}). This also includes the address the client connected to
  * ({@link #serverAddress}, {@link #port}).
  */
-public class HandshakePacket implements ServerboundPacket {
+public class HandshakePacket extends ServerboundPacket {
     public final int protocolVersion;
     public final String serverAddress;
     public final int port;
@@ -34,11 +34,6 @@ public class HandshakePacket implements ServerboundPacket {
         this.nextState = prePlayConnectionState;
     }
 
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
     @Override
     public int getPacketId() {
         return 0;

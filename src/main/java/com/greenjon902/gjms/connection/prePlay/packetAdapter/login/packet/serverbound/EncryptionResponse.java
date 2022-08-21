@@ -8,7 +8,7 @@ import java.util.Arrays;
  * there can either be a {@link #sharedSecret} and a {@link #verifyToken} or there can be a {@link #sharedSecret}, a
  * {@link #salt} and a {@link #messageSignature}.
  */
-public class EncryptionResponse implements ServerboundPacket {
+public class EncryptionResponse extends ServerboundPacket {
     public final byte[] sharedSecret;
     public final byte[] verifyToken;
     public final Long salt;
@@ -33,11 +33,6 @@ public class EncryptionResponse implements ServerboundPacket {
         return !(verifyToken == null);
     }
 
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
     @Override
     public int getPacketId() {
         return 1;

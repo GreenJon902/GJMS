@@ -4,7 +4,7 @@ import com.greenjon902.gjms.connection.ClientboundPacket;
 
 import java.util.Arrays;
 
-public class EncryptionRequest implements ClientboundPacket {
+public class EncryptionRequest extends ClientboundPacket {
     public final String serverId;
     public final byte[] publicKey;
     public final byte[] verifyToken;
@@ -15,11 +15,6 @@ public class EncryptionRequest implements ClientboundPacket {
         this.verifyToken = verifyToken;
     }
 
-    /**
-     * The packet id is the way that minecraft clients are able to understand what each packet is and what it will do.
-     *
-     * @return The packet id of this packet
-     */
     @Override
     public int getPacketId() {
         return 1;
