@@ -8,6 +8,7 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapte
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Contains the functionality for converting packets when the connection's {@link PrePlayConnectionState}
@@ -15,21 +16,15 @@ import java.io.IOException;
  * connections protocolVersion yet!
  */
 public class HandshakePacketAdapter extends PrePlayPacketAdapter {
-    /**
-     * Gets the first packet from a connection
-     *
-     * @param connection The connection where the packet is coming from
-     */
     @Override
-    public ServerboundPacket getFirstPacket(Connection connection) throws IOException {
-        int packetLength = decodeFirstVarInt(connection);
-        int packetId = decodeFirstVarInt(connection);
+    public ServerboundPacket decodePacket(InputStream inputStream) throws IOException {
+        int packetId = decodeFirstVarInt(inputStream);
 
         if (packetId == 0x00) { // 00000000 - Handshake
-            int protocolVersion = decodeFirstVarInt(connection);
-            String serverAddress = decodeFirstString(connection);
-            int port = decodeFirstUnsignedShort(connection);
-            int nextState = decodeFirstVarInt(connection);
+            int protocolVersion = decodeFirstVarInt(inputStream);
+            String serverAddress = decodeFirstString(inputStream);
+            int port = decodeFirstUnsignedShort(inputStream);
+            int nextState = decodeFirstVarInt(inputStream);
             return new HandshakePacket(protocolVersion, serverAddress, port, nextState);
         }
         throw new RuntimeException("Unknown packet with ID " + packetId);

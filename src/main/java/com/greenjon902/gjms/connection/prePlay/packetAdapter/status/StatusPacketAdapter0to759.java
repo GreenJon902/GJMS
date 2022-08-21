@@ -11,6 +11,7 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serve
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -18,21 +19,16 @@ import java.nio.charset.StandardCharsets;
  * {@link PrePlayConnectionState#STATUS} and the protocolVersion is between 0 and 759.
  */
 public class StatusPacketAdapter0to759 extends PrePlayPacketAdapter {
-    /**
-     * Gets the first packet from a connection
-     *
-     * @param connection The connection where the packet is coming from
-     */
     @Override
-    public ServerboundPacket getFirstPacket(Connection connection) throws IOException {
-        int packetLength = decodeFirstVarInt(connection);
-        int packetId = decodeFirstVarInt(connection);
+    public ServerboundPacket decodePacket(InputStream inputStream) throws IOException {
+        int packetLength = decodeFirstVarInt(inputStream);
+        int packetId = decodeFirstVarInt(inputStream);
 
         switch (packetId) {
             case 0x00: // 00000000 - Status Request
                 return new StatusRequest();
             case 0x01: // 00000001 - Ping Request
-                long payload = decodeFirstLong(connection);
+                long payload = decodeFirstLong(inputStream);
                 return new PingRequest(payload);
             default:
                 throw new RuntimeException("Unknown packet with ID " + packetId);

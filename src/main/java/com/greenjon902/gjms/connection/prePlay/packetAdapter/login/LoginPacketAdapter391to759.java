@@ -16,6 +16,7 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serve
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -23,37 +24,31 @@ import java.nio.charset.StandardCharsets;
  * {@link PrePlayConnectionState#LOGIN} and the protocolVersion is between 391 and 759.
  */
 public class LoginPacketAdapter391to759 extends PrePlayPacketAdapter {
-    /**
-     * Gets the first packet from a connection
-     *
-     * @param connection The connection where the packet is coming from
-     */
     @Override
-    public ServerboundPacket getFirstPacket(Connection connection) throws IOException {
-        int packetLength = decodeFirstVarInt(connection);
-        int packetId = decodeFirstVarInt(connection);
+    public ServerboundPacket decodePacket(InputStream inputStream) throws IOException {
+        int packetId = decodeFirstVarInt(inputStream);
 
         if (packetId == 0x00) { // 00000000 - Login Start
-            String name = decodeFirstString(connection);
-            boolean hasSignatureData = decodeFirstBoolean(connection);
+            String name = decodeFirstString(inputStream);
+            boolean hasSignatureData = decodeFirstBoolean(inputStream);
             if (hasSignatureData) {
-                long timestamp = decodeFirstLong(connection);
-                byte[] publicKey = decodeFirstByteArray(connection);
-                byte[] signature = decodeFirstByteArray(connection);
+                long timestamp = decodeFirstLong(inputStream);
+                byte[] publicKey = decodeFirstByteArray(inputStream);
+                byte[] signature = decodeFirstByteArray(inputStream);
 
                 return new LoginStart(name, timestamp, publicKey, signature);
             } // else:
             return new LoginStart(name);
 
         } else if (packetId == 0x01) { // 00000001 - Encryption Response
-            byte[] sharedSecret = decodeFirstByteArray(connection);
-            boolean hasVerifyToken = decodeFirstBoolean(connection);
+            byte[] sharedSecret = decodeFirstByteArray(inputStream);
+            boolean hasVerifyToken = decodeFirstBoolean(inputStream);
             if (hasVerifyToken) {
-                byte[] verifyToken = decodeFirstByteArray(connection);
+                byte[] verifyToken = decodeFirstByteArray(inputStream);
                 return new EncryptionResponse(sharedSecret, verifyToken);
             } // else:
-            long salt = decodeFirstLong(connection);
-            byte[] messageSignature = decodeFirstByteArray(connection);
+            long salt = decodeFirstLong(inputStream);
+            byte[] messageSignature = decodeFirstByteArray(inputStream);
             return new EncryptionResponse(sharedSecret, salt, messageSignature);
         }
 

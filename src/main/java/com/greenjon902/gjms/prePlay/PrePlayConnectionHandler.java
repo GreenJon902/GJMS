@@ -13,7 +13,9 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serve
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,8 +74,9 @@ public class PrePlayConnectionHandler {
      * @param connection The connection where the packet is coming from
      */
     private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
-        ServerboundPacket packet = connection.getPacketAdapter().getFirstPacket(connection);
-        System.out.println(packet);
+        InputStream packetData = new ByteArrayInputStream(connection.getPacketAdapter().readNextPacket(connection));
+        ServerboundPacket packet = connection.getPacketAdapter().decodePacket(packetData);
+
         switch (connection.getPrePlayConnectionState()) {
             case HANDSHAKE -> {
                 if (!(packet instanceof HandshakePacket handshakePacket)) {

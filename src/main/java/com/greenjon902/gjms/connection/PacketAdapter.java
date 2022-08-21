@@ -4,7 +4,9 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.client
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -27,17 +29,13 @@ public abstract class PacketAdapter {
      * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
      * VarInts can store up to 5 bytes of data.
-     *
-     * @param connection The connection where the packet is coming from
-     * @return The integer that was decoded
-     * @throws IOException If an I/O error occurs
      */
-    public static int decodeFirstVarInt(@NotNull Connection connection) throws IOException {
+    public int decodeFirstVarInt(@NotNull InputStream inputStream) throws IOException {
         int value = 0; // The number that is being decoded
         int position = 0; // The position of value that is currently being edited
 
         while (true) {
-            byte currentByte = (byte) connection.inputStream.read();
+            byte currentByte = (byte) inputStream.read();
 
             value |= (currentByte & SEGMENT_BITS) << position; // adds the new byte to the value
 
@@ -49,29 +47,18 @@ public abstract class PacketAdapter {
         return value;
     }
 
-    /**
-     * Reads the first boolean from the connection.
-     *
-     * @param connection The connection where the packet is coming from
-     * @return The boolean that was decoded
-     * @throws IOException If an I/O error occurs
-     */
-    public static boolean decodeFirstBoolean(@NotNull Connection connection) throws IOException {
-        return (connection.inputStream.read() & BOOL_TRUE_BITS) == 1;
+    public boolean decodeFirstBoolean(@NotNull InputStream inputStream) throws IOException {
+        return (inputStream.read() & BOOL_TRUE_BITS) == 1;
     }
 
     /**
-     * Reads the byte array from the connection, it will also read the first varInt as that signifies the length of the
+     * Reads the byte array, it will also read the first varInt as that signifies the length of the
      * array.
-     *
-     * @param connection The connection where the packet is coming from
-     * @return The byte[] that was decoded
-     * @throws IOException If an I/O error occurs
      */
-    public static byte[] decodeFirstByteArray(@NotNull Connection connection) throws IOException {
-        int length = decodeFirstVarInt(connection);
+    public byte[] decodeFirstByteArray(@NotNull InputStream inputStream) throws IOException {
+        int length = decodeFirstVarInt(inputStream);
         byte[] content = new byte[length];
-        connection.inputStream.read(content);
+        inputStream.read(content);
         return content;
     }
 
@@ -80,11 +67,8 @@ public abstract class PacketAdapter {
      * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
      * VarInts can store up to 5 bytes of data.
-     *
-     * @param value The int to be encoded
-     * @return The byte[] of the varInt
      */
-    public static byte[] encodeVarInt(int value) {
+    public byte[] encodeVarInt(int value) {
         byte[] encoded = new byte[5]; // maximum it can hold
         int i = 0;
         while (true){
@@ -104,52 +88,34 @@ public abstract class PacketAdapter {
     }
 
     /**
-     * Reads the first string from the players incoming packets.
-     * Strings are transmitted in UTF-8 and are prefixed by a varInt (see {@link #decodeFirstVarInt(Connection)}).
-     *
-     * @param connection The connection where the packet is coming from
-     * @return The string that was decoded
-     * @throws IOException If an I/O error occurs
+     * Strings are transmitted in UTF-8 and are prefixed by a varInt (see {@link #decodeFirstVarInt(InputStream)}).
      */
     @Contract("_ -> new")
-    public static @NotNull String decodeFirstString(@NotNull Connection connection) throws IOException {
-        int length = decodeFirstVarInt(connection);
+    public @NotNull String decodeFirstString(@NotNull InputStream inputStream) throws IOException {
+        int length = decodeFirstVarInt(inputStream);
         byte[] bytes = new byte[length];
-        connection.inputStream.read(bytes);
+        inputStream.read(bytes);
 
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    public static int decodeFirstUnsignedShort(@NotNull Connection connection) throws IOException {
+    public int decodeFirstUnsignedShort(@NotNull InputStream inputStream) throws IOException {
         int value = 0;
-        value += connection.inputStream.read() << 8;
-        value += connection.inputStream.read();
+        value += inputStream.read() << 8;
+        value += inputStream.read();
         return value;
     }
 
-    /**
-     * Gets the first {@link Long} from a connection.
-     *
-     * @param connection The connection where the packet is coming from
-     * @return The long that was decoded
-     * @throws IOException If an I/O error occurs
-     */
-    public static long decodeFirstLong(@NotNull Connection connection) throws IOException {
+    public long decodeFirstLong(@NotNull InputStream inputStream) throws IOException {
         long value = 0;
         for (int i=0;i<8;i++) {
             value <<= 8;
-            value |= connection.inputStream.read() & BYTE_BITS;
+            value |= inputStream.read() & BYTE_BITS;
         }
         return value;
     }
 
-    /**
-     * Encodes a long by turning it into bytes.
-     *
-     * @param value The value to be encoded
-     * @return The bytes that were got
-     */
-    public static byte[] encodeLong(long value) {
+    public byte[] encodeLong(long value) {
         return new byte[] {
                 (byte) (value >> 56),
                 (byte) (value >> 48),
@@ -168,7 +134,7 @@ public abstract class PacketAdapter {
      * @param byteArray The bytes to be encoded
      * @return The bytes that were got
      */
-    public static byte[] encodeBytes(byte[] byteArray) {
+    public byte[] encodeBytes(byte[] byteArray) {
         byte[] length = encodeVarInt(byteArray.length);
         byte[] bytes = new byte[byteArray.length + length.length];
         System.arraycopy(length, 0, bytes, 0, length.length);
@@ -182,7 +148,7 @@ public abstract class PacketAdapter {
      * @param string The string to be encoded
      * @return The bytes that were got
      */
-    public static byte[] encodeString(String string) {
+    public byte[] encodeString(String string) {
         return encodeBytes(string.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -192,7 +158,7 @@ public abstract class PacketAdapter {
      * @param value The boolean to be encoded
      * @return The bytes that were got
      */
-    public static byte[] encodeBoolean(boolean value) {
+    public byte[] encodeBoolean(boolean value) {
         return new byte[] {(byte) (value ? 0x01 : 0x00)};
     }
 
@@ -202,7 +168,7 @@ public abstract class PacketAdapter {
      * @param uuid The uuid to be encoded
      * @return The bytes that were got
      */
-    public static byte[] encodeUUID(UUID uuid) {
+    public byte[] encodeUUID(UUID uuid) {
         byte[] mostSignificant = encodeLong(uuid.getMostSignificantBits());
         byte[] leastSignificant = encodeLong(uuid.getLeastSignificantBits());
 
@@ -219,7 +185,7 @@ public abstract class PacketAdapter {
      * @param property The property to be encoded
      * @return The bytes that were got
      */
-    public static byte[] encodeProperty(LoginSuccess.Property property) {
+    public byte[] encodeProperty(LoginSuccess.Property property) {
         byte[] name = encodeString(property.name);
         byte[] value = encodeString(property.value);
         byte[] isSigned = encodeBoolean(property.isSigned());
@@ -246,7 +212,7 @@ public abstract class PacketAdapter {
      * @param properties The properties to be encoded
      * @return The bytes that were got
      */
-    public static byte[] encodePropertyArray(LoginSuccess.Property[] properties) {
+    public byte[] encodePropertyArray(LoginSuccess.Property[] properties) {
         // We don't know what the full length is yet, so we can't make the final array
         byte[][] encodedIndividualProperties = new byte[properties.length][];
         int totalLength = 0;
@@ -270,12 +236,14 @@ public abstract class PacketAdapter {
     }
 
     /**
-     * Gets the first packet from a connection.
-     *
-     * @param connection The connection where the packet is coming from
-     * @return The packet that has been got
+     * Reads the next packet bytes into a byte[]
      */
-    public abstract ServerboundPacket getFirstPacket(Connection connection) throws IOException;
+    public byte[] readNextPacket(Connection connection) throws IOException {
+        int length = decodeFirstVarInt(connection.inputStream);
+        return connection.inputStream.readNBytes(length);
+    }
+
+    public abstract ServerboundPacket decodePacket(InputStream inputStream) throws IOException;
 
     /**
      * Sends a packet to the given connection.
