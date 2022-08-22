@@ -57,11 +57,10 @@ public class PrePlayConnectionHandler {
                             handleNextPacketFrom(connection);
                         }
                     } catch (Exception e) {
-                        System.out.println("Failed to handle packet from " + connection.ip + " - " + e.getMessage());
+                        System.err.println("Failed to handle packet from " + connection.ip + " - " + e.getMessage());
                         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                            System.out.println(stackTraceElement.toString());
+                            System.err.println(stackTraceElement.toString());
                         }
-                        System.out.println();
                     }
                 }
             }
