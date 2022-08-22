@@ -1,7 +1,6 @@
 package com.greenjon902.gjms.connection.packetAdapter;
 
 import com.greenjon902.gjms.TestPacketAdapter;
-import com.greenjon902.gjms.connection.PacketAdapter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

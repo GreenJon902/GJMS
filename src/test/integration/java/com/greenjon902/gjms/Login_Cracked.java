@@ -1,4 +1,4 @@
-package com.greenjon902.gjms.ioTests;
+package com.greenjon902.gjms;
 
 import com.greenjon902.gjms.Utils;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +15,6 @@ import java.util.UUID;
 import static com.greenjon902.gjms.Utils.byteArray;
 import static com.greenjon902.gjms.Utils.readVarInt;
 
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class Login_Cracked {
     private final String ip = "127.0.0.1";
 

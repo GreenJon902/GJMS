@@ -18,15 +18,19 @@ public class Utils {
         return byteArray;
     }
 
+    private static Integer port = null;
     /**
-     * Make a server on any port.
+     * Make a server on any port if not yet made.
      * @return The port
      */
     public static int makeServer(boolean cracked) {
-        NewConnectionHandler socketManager = new NewConnectionHandler(cracked);
-        socketManager.start();
-        PrePlayConnectionHandler.startNewHandler();
-        return socketManager.getPort();
+        if (port == null) {
+            NewConnectionHandler socketManager = new NewConnectionHandler(cracked);
+            socketManager.start();
+            PrePlayConnectionHandler.startNewHandler();
+            port = socketManager.getPort();
+        }
+        return port;
     }
 
     public static int readVarInt(InputStream inputStream) throws IOException {

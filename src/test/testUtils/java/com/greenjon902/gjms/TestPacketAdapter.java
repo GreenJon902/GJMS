@@ -12,11 +12,11 @@ public class TestPacketAdapter extends PacketAdapter {
 
     @Override
     public ServerboundPacket decodePacket(InputStream inputStream) throws IOException {
-        throw new RuntimeException("TestPacketAdapter.decodePacket has not been implemented");
+        throw new RuntimeException("com.greenjon902.gjms.TestPacketAdapter.decodePacket has not been implemented");
     }
 
     @Override
     public byte[] encodePacket(ClientboundPacket clientboundPacket) {
-        throw new RuntimeException("TestPacketAdapter.encodePacket has not been implemented");
+        throw new RuntimeException("com.greenjon902.gjms.TestPacketAdapter.encodePacket has not been implemented");
     }
 }

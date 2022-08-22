@@ -1,7 +1,6 @@
-package com.greenjon902.gjms.ioTests;
+package com.greenjon902.gjms;
 
 import com.greenjon902.gjms.Utils;
-import com.greenjon902.gjms.connection.NewConnectionHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import static com.greenjon902.gjms.Utils.byteArray;
 import static com.greenjon902.gjms.Utils.readVarInt;
 
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class Status_ServerListPing {
     private final String ip = "127.0.0.1";
 
@@ -57,7 +55,7 @@ public class Status_ServerListPing {
 
                 // Ping Request -------------------------
                 // Length - VarInt
-                0x09, // 00000003
+                0x09, // 00000009
                 // Packet ID - VarInt
                 0x01, // 00000001
                 // Payload - Long
@@ -78,7 +76,7 @@ public class Status_ServerListPing {
         // Status Response -
 
         // Packet length
-         readVarInt(inputStream); // TODO: Check packet length
+        System.out.println(readVarInt(inputStream)); // TODO: Check packet length
 
         // Packet ID
         Assertions.assertEquals(0, inputStream.read(), "Wrong PacketId for StatusResponse");
