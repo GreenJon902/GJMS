@@ -1,5 +1,6 @@
 package com.greenjon902.gjms.connection.prePlay;
 
+import com.greenjon902.gjms.common.PlayerConnection;
 import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.PacketAdapter;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 /**
  * A container class to store everything to do with a connection that is not in the play state.
  */
-public class PrePlayConnection extends Connection {
+public class PrePlayConnection extends Connection implements PlayerConnection {
     private int protocolVersion = -1; // by default is not set, is editable in prePlay as we don't know it yet
     private PacketAdapter packetAdapter;
     private PrePlayConnectionState prePlayConnectionState = PrePlayConnectionState.HANDSHAKE;
@@ -66,17 +67,17 @@ public class PrePlayConnection extends Connection {
     }
 
     public void send(ClientboundPacket clientboundPacket) throws IOException {
-        //System.out.println("Sending " + clientboundPacket);
+        System.out.println("Sending " + clientboundPacket);
         byte[] encoded = packetAdapter.encodePacket(clientboundPacket);
-        //System.out.println(Arrays.toString(encoded));
-        //System.out.println(new String(encoded));
+        System.out.println(Arrays.toString(encoded));
+        System.out.println(new String(encoded));
         outputStream.write(encoded);
     }
 
     public ServerboundPacket receive() throws IOException {
         ByteArrayInputStream packetInputStream = new ByteArrayInputStream(packetAdapter.readNextPacketFrom(this));
         ServerboundPacket serverboundPacket = packetAdapter.decodePacket(packetInputStream);
-        //System.out.println("Received " + serverboundPacket);
+        System.out.println("Received " + serverboundPacket);
         return serverboundPacket;
     }
 }

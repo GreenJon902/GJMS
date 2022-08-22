@@ -1,7 +1,8 @@
 package com.greenjon902.gjms;
 
+import com.greenjon902.gjms.common.ConnectionHandler;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandlerImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,10 +26,12 @@ public class Utils {
      */
     public static int makeServer(boolean cracked) {
         if (port == null) {
-            NewConnectionHandler socketManager = new NewConnectionHandler(cracked);
-            socketManager.start();
-            PrePlayConnectionHandler.startNewHandler();
-            port = socketManager.getPort();
+            ConnectionHandler prePlayConnectionHandler = new PrePlayConnectionHandlerImpl();
+            NewConnectionHandler newConnectionHandler = new NewConnectionHandler(cracked, prePlayConnectionHandler);
+            newConnectionHandler.startNewHandler();
+            prePlayConnectionHandler.startNewHandler();
+
+            port = newConnectionHandler.getPort();
         }
         return port;
     }

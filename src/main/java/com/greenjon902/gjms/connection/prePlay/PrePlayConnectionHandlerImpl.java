@@ -1,9 +1,9 @@
 package com.greenjon902.gjms.connection.prePlay;
 
+import com.greenjon902.gjms.common.ConnectionHandler;
+import com.greenjon902.gjms.common.PlayerConnection;
 import com.greenjon902.gjms.connection.ClientboundPacket;
-import com.greenjon902.gjms.connection.NewConnectionHandler;
 import com.greenjon902.gjms.connection.ServerboundPacket;
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serverbound.LoginStart;
@@ -13,9 +13,7 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serve
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,26 +21,23 @@ import java.util.UUID;
 
 /**
  * Handles connections from clients who are not in the play state. It is given connections by the
- * {@link NewConnectionHandler}.
+ * {@link com.greenjon902.gjms.connection.NewConnectionHandler}.
  */
-public class PrePlayConnectionHandler {
-    private static final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<>());
+public class PrePlayConnectionHandlerImpl implements ConnectionHandler {
+    private final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<>());
 
     /**
-     * Adds a connection that will need to be handled.
+     * Adds a connection that will need to be handled. Has to be an instance of {@link PrePlayConnection}
      *
      * @param connection The connection to be added
      */
-    public static void addConnection(@NotNull PrePlayConnection connection) {
-        connections.add(connection);
+    public void addConnection(@NotNull PlayerConnection connection) {
+        if (!(connection instanceof PrePlayConnection)) throw new IllegalArgumentException("PrePlayConnectionHandlerImpl#" +
+                "addConnection can only take instances of PrePlayConnection!");
+        connections.add((PrePlayConnection) connection);
     }
 
-    /**
-     * Starts a new thread, these constantly loop through the current open connections and when a connection sends a
-     * packet, it will be handled by {@link #handleNextPacketFrom(PrePlayConnection)}. You can have multiple running at
-     * one to improve speed when there is a large number of connections.
-     */
-    public static void startNewHandler() {
+    public void startNewHandler() {
         new Thread(() -> {
             int i = 0;
             while (true) {
@@ -72,7 +67,7 @@ public class PrePlayConnectionHandler {
      *
      * @param connection The connection where the packet is coming from
      */
-    private static void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
+    private void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
         ServerboundPacket packet = connection.receive();
 
         switch (connection.getPrePlayConnectionState()) {
@@ -127,12 +122,7 @@ public class PrePlayConnectionHandler {
         }
     }
 
-    /**
-     * Gets all open {@link PrePlayConnection}s.
-     *
-     * @return All open connections
-     */
-    public static PrePlayConnection[] getConnections() {
+    public PrePlayConnection[] getConnections() {
         return connections.toArray(PrePlayConnection[]::new);
     }
 }
