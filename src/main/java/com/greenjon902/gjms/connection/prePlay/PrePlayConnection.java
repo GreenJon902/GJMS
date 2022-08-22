@@ -66,14 +66,17 @@ public class PrePlayConnection extends Connection {
     }
 
     public void send(ClientboundPacket clientboundPacket) throws IOException {
-        // System.out.println("Sending " + clientboundPacket);
-        outputStream.write(packetAdapter.encodePacket(clientboundPacket));
+        //System.out.println("Sending " + clientboundPacket);
+        byte[] encoded = packetAdapter.encodePacket(clientboundPacket);
+        //System.out.println(Arrays.toString(encoded));
+        //System.out.println(new String(encoded));
+        outputStream.write(encoded);
     }
 
     public ServerboundPacket receive() throws IOException {
         ByteArrayInputStream packetInputStream = new ByteArrayInputStream(packetAdapter.readNextPacketFrom(this));
         ServerboundPacket serverboundPacket = packetAdapter.decodePacket(packetInputStream);
-        // System.err.println("Received " + serverboundPacket);
+        //System.out.println("Received " + serverboundPacket);
         return serverboundPacket;
     }
 }

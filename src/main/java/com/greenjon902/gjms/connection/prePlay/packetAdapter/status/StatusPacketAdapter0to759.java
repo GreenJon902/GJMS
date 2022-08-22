@@ -41,7 +41,7 @@ public class StatusPacketAdapter0to759 extends PrePlayPacketAdapter {
         if (packet instanceof StatusResponse statusResponse) {
             byte[] jsonResponse = ("{" +
                     "\"version\":{" +
-                    "\"name\"" + statusResponse.versionName +
+                    "\"name\":" + statusResponse.versionName + "," +
                     "\"protocol\":" + statusResponse.protocolNumber +
                     "}," +
                     "\"players\":{" +
