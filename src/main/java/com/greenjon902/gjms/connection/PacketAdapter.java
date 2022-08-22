@@ -30,6 +30,10 @@ public abstract class PacketAdapter {
      * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
      * VarInts can store up to 5 bytes of data.
+     *
+     * @param inputStream The stream varInt is coming from
+     * @return The integer that was decoded
+     * @throws IOException If an I/O error occurs
      */
     public int decodeFirstVarInt(@NotNull InputStream inputStream) throws IOException {
         int value = 0; // The number that is being decoded
@@ -48,13 +52,24 @@ public abstract class PacketAdapter {
         return value;
     }
 
+    /**
+     * Reads the first boolean from the connection.
+     *
+     * @param inputStream The stream boolean is coming from
+     * @return The boolean that was decoded
+     * @throws IOException If an I/O error occurs
+     */
     public boolean decodeFirstBoolean(@NotNull InputStream inputStream) throws IOException {
         return (inputStream.read() & BOOL_TRUE_BITS) == 1;
     }
 
     /**
-     * Reads the byte array, it will also read the first varInt as that signifies the length of the
+     * Reads the byte array from the connection, it will also read the first varInt as that signifies the length of the
      * array.
+     *
+     * @param inputStream The stream where the byte array is coming from
+     * @return The byte[] that was decoded
+     * @throws IOException If an I/O error occurs
      */
     public byte[] decodeFirstByteArray(@NotNull InputStream inputStream) throws IOException {
         int length = decodeFirstVarInt(inputStream);
@@ -68,6 +83,9 @@ public abstract class PacketAdapter {
      * VarInts are stored in a way that each byte has 7 bits of data which is prefixed by a bit that shows whether
      * to continue or not, if it is a 0 then the varInt is over, if it is a 1 then the varInt has another byte of data.
      * VarInts can store up to 5 bytes of data.
+     *
+     * @param value The int to be encoded
+     * @return The byte[] of the varInt
      */
     public byte[] encodeVarInt(int value) {
         byte[] encoded = new byte[5]; // maximum it can hold
@@ -89,7 +107,12 @@ public abstract class PacketAdapter {
     }
 
     /**
+     * Reads the first string from the players incoming packets.
      * Strings are transmitted in UTF-8 and are prefixed by a varInt (see {@link #decodeFirstVarInt(InputStream)}).
+     *
+     * @param inputStream The connection where the string is coming from
+     * @return The string that was decoded
+     * @throws IOException If an I/O error occurs
      */
     @Contract("_ -> new")
     public @NotNull String decodeFirstString(@NotNull InputStream inputStream) throws IOException {
@@ -100,6 +123,13 @@ public abstract class PacketAdapter {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Gets the first {@link Short} from a connection.
+     *
+     * @param inputStream The short where the packet is coming from
+     * @return The long that was decoded
+     * @throws IOException If an I/O error occurs
+     */
     public int decodeFirstUnsignedShort(@NotNull InputStream inputStream) throws IOException {
         int value = 0;
         value += inputStream.read() << 8;
@@ -107,6 +137,13 @@ public abstract class PacketAdapter {
         return value;
     }
 
+    /**
+     * Gets the first {@link Long} from a connection.
+     *
+     * @param inputStream The stream where the long is coming from
+     * @return The long that was decoded
+     * @throws IOException If an I/O error occurs
+     */
     public long decodeFirstLong(@NotNull InputStream inputStream) throws IOException {
         long value = 0;
         for (int i=0;i<8;i++) {
@@ -116,6 +153,12 @@ public abstract class PacketAdapter {
         return value;
     }
 
+    /**
+     * Encodes a long by turning it into bytes.
+     *
+     * @param value The long to be encoded
+     * @return The bytes that were got
+     */
     public byte[] encodeLong(long value) {
         return new byte[] {
                 (byte) (value >> 56),
@@ -237,14 +280,31 @@ public abstract class PacketAdapter {
     }
 
     /**
-     * Reads the next packet bytes into a byte[]
+     * Reads the next packet bytes into a byte[], see {@link #decodeFirstByteArray(InputStream)}
+     *
+     * @param connection The connection where the packet is coming from
+     * @return The packet that has been got
+     * @throws IOException If an I/O error occurs
      */
     public byte[] readNextPacketFrom(Connection connection) throws IOException {
-        int length = decodeFirstVarInt(connection.inputStream);
-        return connection.inputStream.readNBytes(length);
+        return decodeFirstByteArray(connection.inputStream);
     }
 
+    /**
+     * Decodes the first packet from an input stream, the stream should only contain one packet - use
+     * {@link #readNextPacketFrom(Connection)}.
+     *
+     * @param inputStream The stream where the packet is coming from
+     * @return The packet that was decoded
+     * @throws IOException If an I/O error occurs
+     */
     public abstract ServerboundPacket decodePacket(InputStream inputStream) throws IOException;
 
+    /**
+     * Encodes a {@link ClientboundPacket} to a byte[].
+     *
+     * @param clientboundPacket The packet to be encoded
+     * @return The encoded packet as a byte[]
+     */
     public abstract byte[] encodePacket(ClientboundPacket clientboundPacket);
 }
