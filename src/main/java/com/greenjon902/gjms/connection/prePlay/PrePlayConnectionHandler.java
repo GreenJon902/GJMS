@@ -1,4 +1,4 @@
-package com.greenjon902.gjms.prePlay;
+package com.greenjon902.gjms.connection.prePlay;
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.NewConnectionHandler;

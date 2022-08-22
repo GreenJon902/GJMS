@@ -1,7 +1,7 @@
 package com.greenjon902.gjms.connection;
 
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
-import com.greenjon902.gjms.prePlay.PrePlayConnectionHandler;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
