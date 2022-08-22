@@ -85,7 +85,7 @@ public class PrePlayConnectionHandler {
             }
             case STATUS -> {
                 if (packet instanceof StatusRequest) { // TODO: Get actual data
-                    ClientboundPacket response = new StatusResponse("1.19", connection.getProtocolVersion(),
+                    ClientboundPacket response = new StatusResponse("GJMS", connection.getProtocolVersion(),
                             12, 3,
                             "[{\"name\":\"e3efe\",\"id\":\"86f5d3d8-0d4b-4230-9852-77a40baf39bd\"}," +
                                     "{\"name\":\"AdminJon_\",\"id\":\"0f549ef4-000b-4a9a-8fd2-2c3e7044ea54\"}," +
