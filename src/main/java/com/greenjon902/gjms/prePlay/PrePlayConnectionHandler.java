@@ -86,7 +86,7 @@ public class PrePlayConnectionHandler {
                 if (packet instanceof StatusRequest) { // TODO: Get actual data
                     ClientboundPacket response = new StatusResponse("GJMS", connection.getProtocolVersion(),
                             12, 3,
-                            "[{\"name\":\"e3efe\",\"id\":\"86f5d3d8-0d4b-4230-9852-77a40baf39bd\"}," +
+                            "[{\"name\":\"GreenJon\",\"id\":\"86f5d3d8-0d4b-4230-9852-77a40baf39bd\"}," +
                                     "{\"name\":\"AdminJon_\",\"id\":\"0f549ef4-000b-4a9a-8fd2-2c3e7044ea54\"}," +
                                     "{\"name\":\"Dream\",\"id\":\"ec70bcaf-702f-4bb8-b48d-276fa52a780c\"}]",
                             "{\"text\": \"Hello World!\"}", false);
