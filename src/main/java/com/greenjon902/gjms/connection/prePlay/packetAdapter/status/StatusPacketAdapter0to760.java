@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
  * Contains the functionality for converting packets when the connection's {@link PrePlayConnectionState} is
  * {@link PrePlayConnectionState#STATUS} and the protocolVersion is between 0 and 759.
  */
-public class StatusPacketAdapter0to759 extends PrePlayPacketAdapter {
+public class StatusPacketAdapter0to760 extends PrePlayPacketAdapter {
     @Override
     public ServerboundPacket decodePacket(InputStream inputStream) throws IOException {
         int packetId = decodeFirstVarInt(inputStream);

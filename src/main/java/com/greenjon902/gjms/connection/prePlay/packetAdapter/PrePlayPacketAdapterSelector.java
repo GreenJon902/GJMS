@@ -2,8 +2,8 @@ package com.greenjon902.gjms.connection.prePlay.packetAdapter;
 
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.HandshakePacketAdapter;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.LoginPacketAdapter391to759;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.StatusPacketAdapter0to759;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.LoginPacketAdapter391to760;
+import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.StatusPacketAdapter0to760;
 
 import java.util.HashMap;
 
@@ -42,13 +42,13 @@ public class PrePlayPacketAdapterSelector {
                 return new HandshakePacketAdapter(); // We shouldn't have a protocol version yet
             }
             case STATUS -> {
-                return new StatusPacketAdapter0to759(); // Works the same for all of these versions
+                return new StatusPacketAdapter0to760(); // Works the same for all of these versions
             }
             case LOGIN -> {
-                if (391 <= protocolVersion && protocolVersion <= 759) {
-                    return new LoginPacketAdapter391to759();
+                if (391 <= protocolVersion && protocolVersion <= 760) {
+                    return new LoginPacketAdapter391to760();
                 } else {
-                    throw new RuntimeException("LoginPacketAdaptors only support protocol versions between 391 and 759");
+                    throw new RuntimeException("LoginPacketAdaptors only support protocol versions between 391 and 760");
                 }
             }
             default -> throw new RuntimeException("Create adaptor only has HandshakePacketAdaptors, " +
