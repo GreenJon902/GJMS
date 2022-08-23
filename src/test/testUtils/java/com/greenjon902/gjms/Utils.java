@@ -1,11 +1,14 @@
 package com.greenjon902.gjms;
 
 import com.greenjon902.gjms.common.ConnectionHandler;
+import com.greenjon902.gjms.common.FirstWorldGetter;
+import com.greenjon902.gjms.common.Player;
 import com.greenjon902.gjms.connection.NewConnectionHandler;
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandlerImpl;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * The tools that a lot of tests will require
@@ -26,7 +29,7 @@ public class Utils {
      */
     public static int makeServer(boolean cracked) {
         if (port == null) {
-            ConnectionHandler prePlayConnectionHandler = new PrePlayConnectionHandlerImpl();
+            ConnectionHandler prePlayConnectionHandler = new PrePlayConnectionHandler(new FirstWorldGetterImpl());
             NewConnectionHandler newConnectionHandler = new NewConnectionHandler(cracked, prePlayConnectionHandler);
             newConnectionHandler.startNewHandler();
             prePlayConnectionHandler.startNewHandler();
@@ -46,5 +49,12 @@ public class Utils {
             position += 7;
         }
         return value;
+    }
+}
+
+class FirstWorldGetterImpl implements FirstWorldGetter {
+    @Override
+    public String getWorld(UUID playerId) {
+        return null;
     }
 }

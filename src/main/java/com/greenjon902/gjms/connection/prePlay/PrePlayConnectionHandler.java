@@ -1,9 +1,13 @@
 package com.greenjon902.gjms.connection.prePlay;
 
+import com.greenjon902.gjms.GJMS;
+import com.greenjon902.gjms.common.Connection;
 import com.greenjon902.gjms.common.ConnectionHandler;
-import com.greenjon902.gjms.common.PlayerConnection;
+import com.greenjon902.gjms.common.FirstWorldGetter;
+import com.greenjon902.gjms.common.Player;
 import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.ServerboundPacket;
+import com.greenjon902.gjms.connection.play.SocketPlayerImpl;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.handshake.packet.serverbound.HandshakePacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serverbound.LoginStart;
@@ -23,15 +27,21 @@ import java.util.UUID;
  * Handles connections from clients who are not in the play state. It is given connections by the
  * {@link com.greenjon902.gjms.connection.NewConnectionHandler}.
  */
-public class PrePlayConnectionHandlerImpl implements ConnectionHandler {
+public class PrePlayConnectionHandler implements ConnectionHandler {
     private final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<>());
+
+    private FirstWorldGetter firstWorldGetter;
+
+    public PrePlayConnectionHandler(FirstWorldGetter firstWorldGetter) {
+        this.firstWorldGetter = firstWorldGetter;
+    }
 
     /**
      * Adds a connection that will need to be handled. Has to be an instance of {@link PrePlayConnection}
      *
      * @param connection The connection to be added
      */
-    public void addConnection(@NotNull PlayerConnection connection) {
+    public void addConnection(@NotNull Connection connection) {
         if (!(connection instanceof PrePlayConnection)) throw new IllegalArgumentException("PrePlayConnectionHandlerImpl#" +
                 "addConnection can only take instances of PrePlayConnection!");
         connections.add((PrePlayConnection) connection);
@@ -108,6 +118,14 @@ public class PrePlayConnectionHandlerImpl implements ConnectionHandler {
                                 connection.name,
                                 new LoginSuccess.Property[0]);
                         connection.send(response);
+
+                        Player player = new SocketPlayerImpl(
+                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + connection.name).getBytes()),
+                                connection.name,
+                                connection.getSocket(),
+                                connection.getProtocolVersion());
+
+                        GJMS.worldHandler.get(firstWorldGetter.getWorld(player.getPlayerId())).addPlayer(player);
 
                     } else {
                         throw new RuntimeException("Non-cracked logging in has not yet been implemented");

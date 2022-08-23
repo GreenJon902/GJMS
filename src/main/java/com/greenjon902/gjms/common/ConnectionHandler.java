@@ -4,15 +4,15 @@ import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Handles incoming packets from {@link PlayerConnection}.
+ * Handles incoming packets from {@link Connection}.
  */
 public interface ConnectionHandler {
     /**
      * Adds a connection that will need to be handled.
      *
-     * @param playerConnection The connection to be added
+     * @param connection The connection to be added
      */
-    void addConnection(@NotNull PlayerConnection playerConnection);
+    void addConnection(@NotNull Connection connection);
 
     /**
      * Starts a new thread, these constantly loop through the current open connections and handle the packets. You can
@@ -21,7 +21,7 @@ public interface ConnectionHandler {
     void startNewHandler();
 
     /**
-     * Gets all open {@link PlayerConnection}s for this handler.
+     * Gets all open {@link Connection}s for this handler.
      *
      * @return All open connections
      */

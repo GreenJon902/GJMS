@@ -4,7 +4,7 @@ public interface World {
     /**
      * Add a player to a world.
      *
-     * @param playerConnection The player and it's connection
+     * @param player The player to be added
      */
-    void addPlayer(PlayerConnection playerConnection);
+    void addPlayer(Player player);
 }

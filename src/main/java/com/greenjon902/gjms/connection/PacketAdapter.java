@@ -1,5 +1,6 @@
 package com.greenjon902.gjms.connection;
 
+import com.greenjon902.gjms.common.Connection;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -282,17 +283,17 @@ public abstract class PacketAdapter {
     /**
      * Reads the next packet bytes into a byte[], see {@link #decodeFirstByteArray(InputStream)}
      *
-     * @param connection The connection where the packet is coming from
+     * @param inputStream The connection where the packet is coming from
      * @return The packet that has been got
      * @throws IOException If an I/O error occurs
      */
-    public byte[] readNextPacketFrom(Connection connection) throws IOException {
-        return decodeFirstByteArray(connection.inputStream);
+    public byte[] readNextPacketFrom(InputStream inputStream) throws IOException {
+        return decodeFirstByteArray(inputStream);
     }
 
     /**
      * Decodes the first packet from an input stream, the stream should only contain one packet - use
-     * {@link #readNextPacketFrom(Connection)}.
+     * {@link #readNextPacketFrom(InputStream)}.
      *
      * @param inputStream The stream where the packet is coming from
      * @return The packet that was decoded

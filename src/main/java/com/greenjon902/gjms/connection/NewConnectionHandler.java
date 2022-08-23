@@ -2,14 +2,14 @@ package com.greenjon902.gjms.connection;
 
 import com.greenjon902.gjms.common.ConnectionHandler;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
-import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandlerImpl;
+import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Accepts any incoming connections and gives them to {@link PrePlayConnectionHandlerImpl}
+ * Accepts any incoming connections and gives them to {@link PrePlayConnectionHandler}
  */
 public class NewConnectionHandler {
     private final int port;

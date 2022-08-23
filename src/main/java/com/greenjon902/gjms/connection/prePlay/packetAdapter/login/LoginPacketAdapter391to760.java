@@ -1,7 +1,6 @@
 package com.greenjon902.gjms.connection.prePlay.packetAdapter.login;
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
-import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapter;
@@ -10,14 +9,9 @@ import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.client
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.SetCompression;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serverbound.EncryptionResponse;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.serverbound.LoginStart;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound.PingResponse;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound.StatusResponse;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.PingRequest;
-import com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.serverbound.StatusRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Contains the functionality for converting packets when the connection's {@link PrePlayConnectionState} is

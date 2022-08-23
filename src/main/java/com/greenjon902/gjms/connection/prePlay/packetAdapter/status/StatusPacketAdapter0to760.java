@@ -1,7 +1,6 @@
 package com.greenjon902.gjms.connection.prePlay.packetAdapter.status;
 
 import com.greenjon902.gjms.connection.ClientboundPacket;
-import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnectionState;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapter;

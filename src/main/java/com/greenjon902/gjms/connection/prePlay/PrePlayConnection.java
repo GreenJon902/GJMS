@@ -1,23 +1,28 @@
 package com.greenjon902.gjms.connection.prePlay;
 
-import com.greenjon902.gjms.common.PlayerConnection;
+import com.greenjon902.gjms.common.Connection;
 import com.greenjon902.gjms.connection.ClientboundPacket;
-import com.greenjon902.gjms.connection.Connection;
 import com.greenjon902.gjms.connection.PacketAdapter;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapterSelector;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
 /**
  * A container class to store everything to do with a connection that is not in the play state.
  */
-public class PrePlayConnection extends Connection implements PlayerConnection {
+public class PrePlayConnection implements Connection {
+    private final Socket socket;
+
+    public final InputStream inputStream;
+    public final OutputStream outputStream;
+    public final String ip;
+
     private int protocolVersion = -1; // by default is not set, is editable in prePlay as we don't know it yet
     private PacketAdapter packetAdapter;
     private PrePlayConnectionState prePlayConnectionState = PrePlayConnectionState.HANDSHAKE;
@@ -29,7 +34,12 @@ public class PrePlayConnection extends Connection implements PlayerConnection {
     public byte[] signature;
 
     public PrePlayConnection(Socket socket, boolean cracked) throws IOException {
-        super(socket);
+        this.socket = socket;
+
+        this.inputStream = socket.getInputStream();
+        this.outputStream = socket.getOutputStream();
+        this.ip = socket.getInetAddress() + ":" + socket.getPort();
+
         this.cracked = cracked;
         updatePacketAdaptor(PrePlayConnectionState.HANDSHAKE, -1);
     }
@@ -75,9 +85,13 @@ public class PrePlayConnection extends Connection implements PlayerConnection {
     }
 
     public ServerboundPacket receive() throws IOException {
-        ByteArrayInputStream packetInputStream = new ByteArrayInputStream(packetAdapter.readNextPacketFrom(this));
+        ByteArrayInputStream packetInputStream = new ByteArrayInputStream(packetAdapter.readNextPacketFrom(inputStream));
         ServerboundPacket serverboundPacket = packetAdapter.decodePacket(packetInputStream);
         System.out.println("Received " + serverboundPacket);
         return serverboundPacket;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }
