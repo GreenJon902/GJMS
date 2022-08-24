@@ -25,5 +25,5 @@ public interface ConnectionHandler {
      *
      * @return All open connections
      */
-    PrePlayConnection[] getConnections();
+    Connection[] getConnections();
 }
