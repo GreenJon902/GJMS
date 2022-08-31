@@ -10,13 +10,15 @@ import com.greenjon902.gjms.worldHandler.WorldHandlerImpl;
 
 public class BasicWorld {
     public static void main(String... args) {
-        ConnectionHandler prePlayConnectionHandler = new PrePlayConnectionHandler(new FirstWorldGetterImpl());
-
-        NewConnectionHandler newConnectionHandler = new NewConnectionHandler(25565, true, prePlayConnectionHandler);
-        newConnectionHandler.startNewHandler();
-
-        prePlayConnectionHandler.startNewHandler();
-
         World basicWorld = new WorldImpl(GJMS.worldHandler);
+
+        ConnectionHandler prePlayConnectionHandler = new PrePlayConnectionHandler(new FirstWorldGetterImpl(),
+                new ServerListPingStatusGetterImpl());
+
+        NewConnectionHandler newConnectionHandler = new NewConnectionHandler(25565, true,
+                prePlayConnectionHandler);
+
+        newConnectionHandler.startNewHandler();
+        prePlayConnectionHandler.startNewHandler();
     }
 }

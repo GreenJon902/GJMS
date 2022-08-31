@@ -1,10 +1,7 @@
 package com.greenjon902.gjms.connection.prePlay;
 
 import com.greenjon902.gjms.GJMS;
-import com.greenjon902.gjms.common.Connection;
-import com.greenjon902.gjms.common.ConnectionHandler;
-import com.greenjon902.gjms.common.FirstWorldGetter;
-import com.greenjon902.gjms.common.Player;
+import com.greenjon902.gjms.common.*;
 import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.play.SocketPlayerImpl;
@@ -31,9 +28,12 @@ public class PrePlayConnectionHandler implements ConnectionHandler {
     private final List<PrePlayConnection> connections = Collections.synchronizedList(new ArrayList<>());
 
     private FirstWorldGetter firstWorldGetter;
+    private ServerListPingStatusGetter serverListPingStatusGetter;
 
-    public PrePlayConnectionHandler(FirstWorldGetter firstWorldGetter) {
+    public PrePlayConnectionHandler(FirstWorldGetter firstWorldGetter,
+                                    ServerListPingStatusGetter serverListPingStatusGetter) {
         this.firstWorldGetter = firstWorldGetter;
+        this.serverListPingStatusGetter = serverListPingStatusGetter;
     }
 
     /**
@@ -89,12 +89,8 @@ public class PrePlayConnectionHandler implements ConnectionHandler {
             }
             case STATUS -> {
                 if (packet instanceof StatusRequest) { // TODO: Get actual data
-                    ClientboundPacket response = new StatusResponse("GJMS", connection.getProtocolVersion(),
-                            12, 3,
-                            "[{\"name\":\"GreenJon\",\"id\":\"86f5d3d8-0d4b-4230-9852-77a40baf39bd\"}," +
-                                    "{\"name\":\"AdminJon_\",\"id\":\"0f549ef4-000b-4a9a-8fd2-2c3e7044ea54\"}," +
-                                    "{\"name\":\"Dream\",\"id\":\"ec70bcaf-702f-4bb8-b48d-276fa52a780c\"}]",
-                            "{\"text\": \"Hello World!\"}", false);
+                    ClientboundPacket response = new StatusResponse(serverListPingStatusGetter,
+                            connection.getProtocolVersion());
                     connection.send(response);
                 } else if (packet instanceof PingRequest pingRequest) {
                     ClientboundPacket response = new PingResponse(pingRequest.payload);

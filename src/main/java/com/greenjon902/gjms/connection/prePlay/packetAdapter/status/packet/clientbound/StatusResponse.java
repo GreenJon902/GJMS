@@ -1,5 +1,6 @@
 package com.greenjon902.gjms.connection.prePlay.packetAdapter.status.packet.clientbound;
 
+import com.greenjon902.gjms.common.ServerListPingStatusGetter;
 import com.greenjon902.gjms.connection.ClientboundPacket;
 
 public class StatusResponse extends ClientboundPacket {
@@ -34,6 +35,17 @@ public class StatusResponse extends ClientboundPacket {
         this.description = description;
         this.favicon = null;
         this.previewsChat = previewsChat;
+    }
+
+    public StatusResponse(ServerListPingStatusGetter serverListPingStatusGetter, int clientsProtocolNumber) {
+        this.versionName = serverListPingStatusGetter.getVersionName();
+        this.protocolNumber = serverListPingStatusGetter.getProtocolNumber(clientsProtocolNumber);
+        this.maxPlayers = serverListPingStatusGetter.getMaxPlayers();
+        this.onlinePlayers = serverListPingStatusGetter.getOnlinePlayers();
+        this.playerSample = serverListPingStatusGetter.getPlayerSample();
+        this.description = serverListPingStatusGetter.getDescription();
+        this.favicon = serverListPingStatusGetter.getFavicon();
+        this.previewsChat = serverListPingStatusGetter.getPreviewsChat();
     }
 
     @Override
