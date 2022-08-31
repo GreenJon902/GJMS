@@ -5,6 +5,7 @@ import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.PacketAdapter;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.PrePlayPacketAdapterSelector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class PrePlayConnection implements Connection {
         this.protocolVersion = protocolVersion;
     }
 
+    @Override
     public void send(ClientboundPacket clientboundPacket) throws IOException {
         System.out.println("Sending " + clientboundPacket);
         byte[] encoded = packetAdapter.encodePacket(clientboundPacket);
@@ -84,7 +86,12 @@ public class PrePlayConnection implements Connection {
         outputStream.write(encoded);
     }
 
-    public ServerboundPacket receive() throws IOException {
+    @Override
+    public @Nullable ServerboundPacket receive() throws IOException {
+        if (inputStream.available() == 0) {
+            return null; // No new packets available
+        }
+
         ByteArrayInputStream packetInputStream = new ByteArrayInputStream(packetAdapter.readNextPacketFrom(inputStream));
         ServerboundPacket serverboundPacket = packetAdapter.decodePacket(packetInputStream);
         System.out.println("Received " + serverboundPacket);

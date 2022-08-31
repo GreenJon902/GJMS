@@ -57,10 +57,7 @@ public class PrePlayConnectionHandler implements ConnectionHandler {
                     i %= connections.size();
 
                     try {
-                        if (connection.inputStream.available() != 0) {  // Only handle packets when there is a
-                                                                        // packet to be handled
-                            handleNextPacketFrom(connection);
-                        }
+                        tryHandleNextPacketFrom(connection);
                     } catch (Exception e) {
                         System.err.println("Failed to handle packet from " + connection.ip + " - " + e.getMessage());
                         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
@@ -73,12 +70,15 @@ public class PrePlayConnectionHandler implements ConnectionHandler {
     }
 
     /**
-     * Handles the next packet from a {@link PrePlayConnection}.
+     * Handles the next packet from a {@link PrePlayConnection} if there is a packet to be read.
      *
      * @param connection The connection where the packet is coming from
      */
-    private void handleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
+    private void tryHandleNextPacketFrom(@NotNull PrePlayConnection connection) throws IOException {
         ServerboundPacket packet = connection.receive();
+        if (packet == null) {
+            return;
+        }
 
         switch (connection.getPrePlayConnectionState()) {
             case HANDSHAKE -> {

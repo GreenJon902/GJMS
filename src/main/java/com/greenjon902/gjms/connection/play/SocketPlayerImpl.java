@@ -5,6 +5,7 @@ import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.PacketAdapter;
 import com.greenjon902.gjms.connection.ServerboundPacket;
 import com.greenjon902.gjms.connection.play.packetAdapter.PacketAdapterSelector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,7 +51,11 @@ public class SocketPlayerImpl implements Player {
     }
 
     @Override
-    public ServerboundPacket receive() throws IOException {
+    public @Nullable ServerboundPacket receive() throws IOException {
+        if (inputStream.available() == 0) {
+            return null;
+        }
+
         ByteArrayInputStream packetInputStream = new ByteArrayInputStream(packetAdapter.readNextPacketFrom(inputStream));
         ServerboundPacket serverboundPacket = packetAdapter.decodePacket(packetInputStream);
         System.out.println("Received " + serverboundPacket);
