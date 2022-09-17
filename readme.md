@@ -1,7 +1,9 @@
 # GJMS
 
 ### Known Todo
- - Plugin Channels
-   - Server Brand
+ - Packets:
+   - Plugin Channels
+     - Server Brand
+   - Player Abilities
  - Create and implement a chat component system
  - None-cracked login
