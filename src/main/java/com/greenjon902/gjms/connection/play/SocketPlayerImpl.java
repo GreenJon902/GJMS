@@ -43,10 +43,10 @@ public class SocketPlayerImpl implements Player {
 
     @Override
     public void send(ClientboundPacket clientboundPacket) throws IOException {
-        //System.out.println("Sending " + clientboundPacket);
+        System.out.println("Sending " + clientboundPacket);
         byte[] encoded = packetAdapter.encodePacket(clientboundPacket);
-        //System.out.println(Arrays.toString(encoded));
-        //System.out.println(new String(encoded));
+        System.out.println(Arrays.toString(encoded));
+        System.out.println(new String(encoded));
         outputStream.write(encoded);
     }
 
