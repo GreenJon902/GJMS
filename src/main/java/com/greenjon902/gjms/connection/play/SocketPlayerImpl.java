@@ -63,6 +63,12 @@ public class SocketPlayerImpl implements Player {
     }
 
     @Override
+    public String getConnectionSourceName() {
+        return "SocketPlayerImpl>Socket{" + socket.getLocalAddress()  + ":" + socket.getLocalPort() + " <--> " +
+                socket.getInetAddress() + ":" + socket.getPort() + "}";
+    }
+
+    @Override
     public UUID getPlayerId() {
         return playerId;
     }

@@ -23,4 +23,12 @@ public interface Connection {
      * @throws IOException If an I/O error occurs
      */
     @Nullable ServerboundPacket receive() throws IOException;
+
+    /**
+     * Gets the name of the source of this connection!
+     * NOTE: This should only be used for logging!
+     *
+     * @return The name of the source
+     */
+    String getConnectionSourceName();
 }

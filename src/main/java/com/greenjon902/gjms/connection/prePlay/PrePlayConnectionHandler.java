@@ -59,7 +59,8 @@ public class PrePlayConnectionHandler implements ConnectionHandler {
                     try {
                         tryHandleNextPacketFrom(connection);
                     } catch (Exception e) {
-                        System.err.println("Failed to handle packet from " + connection.ip + " - " + e.getMessage());
+                        System.err.println("Failed to handle packet from " + connection.getConnectionSourceName() +
+                                " - " + e.getMessage());
                         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                             System.err.println(stackTraceElement.toString());
                         }

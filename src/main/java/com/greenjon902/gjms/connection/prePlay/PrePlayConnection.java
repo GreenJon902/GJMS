@@ -22,7 +22,6 @@ public class PrePlayConnection implements Connection {
 
     public final InputStream inputStream;
     public final OutputStream outputStream;
-    public final String ip;
 
     private int protocolVersion = -1; // by default is not set, is editable in prePlay as we don't know it yet
     private PacketAdapter packetAdapter;
@@ -39,7 +38,6 @@ public class PrePlayConnection implements Connection {
 
         this.inputStream = socket.getInputStream();
         this.outputStream = socket.getOutputStream();
-        this.ip = socket.getInetAddress() + ":" + socket.getPort();
 
         this.cracked = cracked;
         updatePacketAdaptor(PrePlayConnectionState.HANDSHAKE, -1);
@@ -96,6 +94,12 @@ public class PrePlayConnection implements Connection {
         ServerboundPacket serverboundPacket = packetAdapter.decodePacket(packetInputStream);
         System.out.println("Received " + serverboundPacket);
         return serverboundPacket;
+    }
+
+    @Override
+    public String getConnectionSourceName() {
+        return "PrePlayConnection>Socket{" + socket.getLocalAddress()  + ":" + socket.getLocalPort() + " <--> " +
+                socket.getInetAddress() + ":" + socket.getPort() + "}";
     }
 
     public Socket getSocket() {
