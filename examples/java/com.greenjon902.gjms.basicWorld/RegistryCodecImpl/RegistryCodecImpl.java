@@ -6,9 +6,15 @@ import com.greenjon902.gjms.common.RegistryCodec.DimensionTypeRegistryEntry;
 import com.greenjon902.gjms.common.RegistryCodec.RegistryCodec;
 
 public class RegistryCodecImpl implements RegistryCodec {
+    private final DimensionTypeRegistryEntry[] dimensionTypes;
+
+    public RegistryCodecImpl(DimensionTypeRegistryEntry[] dimensionTypes) {
+        this.dimensionTypes = dimensionTypes;
+    }
+
     @Override
     public DimensionTypeRegistryEntry[] getDimensionTypes() {
-        return new DimensionTypeRegistryEntry[0];
+        return dimensionTypes;
     }
 
     @Override

@@ -413,15 +413,17 @@ public abstract class PacketAdapter {
                     registryCodec.getDimensionTypes()[i].getElement();
             NBTCompound nbtDimensionTypeRegistryEntryElement = new NBTCompound();
             nbtDimensionTypeRegistryEntryElement.put("piglin_safe",
-                    dimensionTypeRegistryEntryElement.isPiglinSafe());
-            nbtDimensionTypeRegistryEntryElement.put("has_raids", dimensionTypeRegistryEntryElement.hasRaids());
+                    (byte)(dimensionTypeRegistryEntryElement.isPiglinSafe() ? 1 : 0));
+            nbtDimensionTypeRegistryEntryElement.put("has_raids",
+                    (byte)(dimensionTypeRegistryEntryElement.hasRaids() ? 1 : 0));
             nbtDimensionTypeRegistryEntryElement.put("monster_spawn_light_level",
                     dimensionTypeRegistryEntryElement.getMonsterSpawnLightLevel());
             nbtDimensionTypeRegistryEntryElement.put("monster_spawn_block_light_limit",
                     dimensionTypeRegistryEntryElement.getMonsterSpawnBlockLightLimit());
-            nbtDimensionTypeRegistryEntryElement.put("natural", dimensionTypeRegistryEntryElement.isNatural());
+            nbtDimensionTypeRegistryEntryElement.put("natural",
+                    (byte)(dimensionTypeRegistryEntryElement.isNatural() ? 1 : 0));
             nbtDimensionTypeRegistryEntryElement.put("ambient_light",
-                    dimensionTypeRegistryEntryElement.hasAmbientLight());
+                    dimensionTypeRegistryEntryElement.ambientLight());
             if (dimensionTypeRegistryEntryElement.hasFixedTime()) {
                 nbtDimensionTypeRegistryEntryElement.put("fixed_time",
                         dimensionTypeRegistryEntryElement.getFixedTime());
@@ -429,10 +431,11 @@ public abstract class PacketAdapter {
             nbtDimensionTypeRegistryEntryElement.put("infiniburn",
                     dimensionTypeRegistryEntryElement.getInfiniteBurnTag());
             nbtDimensionTypeRegistryEntryElement.put("respawn_anchor_works",
-                    dimensionTypeRegistryEntryElement.doRespawnAnchorsWork());
+                    (byte)(dimensionTypeRegistryEntryElement.doRespawnAnchorsWork() ? 1 : 0));
             nbtDimensionTypeRegistryEntryElement.put("has_skylight",
-                    dimensionTypeRegistryEntryElement.hasSkylight());
-            nbtDimensionTypeRegistryEntryElement.put("bed_works", dimensionTypeRegistryEntryElement.bedWorks());
+                    (byte)(dimensionTypeRegistryEntryElement.hasSkylight() ? 1 : 0));
+            nbtDimensionTypeRegistryEntryElement.put("bed_works",
+                    (byte)(dimensionTypeRegistryEntryElement.bedWorks() ? 1 : 0));
             nbtDimensionTypeRegistryEntryElement.put("effects", dimensionTypeRegistryEntryElement.getEffects());
             nbtDimensionTypeRegistryEntryElement.put("min_y", dimensionTypeRegistryEntryElement.getMinY());
             nbtDimensionTypeRegistryEntryElement.put("height",
@@ -442,9 +445,9 @@ public abstract class PacketAdapter {
             nbtDimensionTypeRegistryEntryElement.put("coordinate_scale",
                     dimensionTypeRegistryEntryElement.getCoordinateScale());
             nbtDimensionTypeRegistryEntryElement.put("ultrawarm",
-                    dimensionTypeRegistryEntryElement.isUltrawarm());
+                    (byte)(dimensionTypeRegistryEntryElement.isUltrawarm() ? 1 : 0));
             nbtDimensionTypeRegistryEntryElement.put("has_ceiling",
-                    dimensionTypeRegistryEntryElement.hasCeiling());
+                    (byte)(dimensionTypeRegistryEntryElement.hasCeiling() ? 1 : 0));
 
             nbtDimensionTypeRegistryEntry.put("element", nbtDimensionTypeRegistryEntryElement);
             nbtDimensionTypeRegistryEntries.add(nbtDimensionTypeRegistryEntry);

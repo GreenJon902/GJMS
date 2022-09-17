@@ -8,7 +8,7 @@ public interface DimensionTypeRegistryEntryElement {
     int getMonsterSpawnLightLevel(); // TODO: support also TagCompound(max_inclusive (TAG_Int), min_inclusive (TAG_Int))
     int getMonsterSpawnBlockLightLimit();
     boolean isNatural();
-    float hasAmbientLight();
+    float ambientLight();
     @Nullable Long getFixedTime();
     String getInfiniteBurnTag();
     boolean doRespawnAnchorsWork();
