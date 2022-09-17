@@ -8,7 +8,7 @@ public interface DimensionTypeRegistryEntryElement {
     int getMonsterSpawnLightLevel(); // TODO: support also TagCompound(max_inclusive (TAG_Int), min_inclusive (TAG_Int))
     int getMonsterSpawnBlockLightLimit();
     boolean isNatural();
-    float getAmbientLight();
+    float hasAmbientLight();
     @Nullable Long getFixedTime();
     String getInfiniteBurnTag();
     boolean doRespawnAnchorsWork();
@@ -22,4 +22,8 @@ public interface DimensionTypeRegistryEntryElement {
     double getCoordinateScale(); // The multiplier applied to coordinates when traveling to the dimension.
     boolean isUltrawarm();
     boolean hasCeiling();
+
+    default boolean hasFixedTime() {
+        return getFixedTime() != null;
+    }
 }

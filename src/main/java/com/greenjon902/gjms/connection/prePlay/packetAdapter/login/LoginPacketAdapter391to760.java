@@ -67,7 +67,7 @@ public class LoginPacketAdapter391to760 extends PrePlayPacketAdapter {
         } else if (packet instanceof LoginSuccess loginSuccess) {
             byte[] uuid = encodeUUID(loginSuccess.uuid);
             byte[] username = encodeString(loginSuccess.username);
-            byte[] properties = encodePropertyArray(loginSuccess.properties);
+            byte[] properties = encodeArray(loginSuccess.properties, this::encodeProperty);
 
             content = new byte[uuid.length + username.length + properties.length];
             System.arraycopy(uuid, 0, content, 0, uuid.length);

@@ -1,24 +1,34 @@
 package com.greenjon902.gjms.connection;
 
 import com.greenjon902.gjms.common.Connection;
+import com.greenjon902.gjms.common.Gamemode;
+import com.greenjon902.gjms.common.Identifier;
+import com.greenjon902.gjms.common.Location;
+import com.greenjon902.gjms.common.RegistryCodec.*;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
+import me.nullicorn.nedit.NBTWriter;
+import me.nullicorn.nedit.type.NBTCompound;
+import me.nullicorn.nedit.type.NBTList;
+import me.nullicorn.nedit.type.TagType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
- * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used to
- * convert bytes from a {@link Connection} to a {@link ServerboundPacket} and be able to convert a {@link ServerboundPacket} to bytes and send
- * it through a {@link Connection}.<br>
- * The reason for this is that a game will only need to understand one packet system,
- * but it will be able to communicate with legacy and future clients without any extra development as all conversions
- * will be handled by the {@link PacketAdapter}.
+ * Contains the base functionality any {@link PacketAdapter} will need. Any class that extends this class will be used
+ * to convert bytes from a {@link Connection} to a {@link ServerboundPacket} and be able to convert a
+ * {@link ServerboundPacket} to bytes and send it through a {@link Connection}.<br>
+ * The reason for this is that a game will only need to understand one packet system, but it will be able to communicate
+ * with legacy and future clients without any extra development as all conversions will be handled by the
+ * {@link PacketAdapter}.
  */
 public abstract class PacketAdapter {
     private static final int SEGMENT_BITS = 0x7F; // 01111111
@@ -174,6 +184,21 @@ public abstract class PacketAdapter {
     }
 
     /**
+     * Encodes an int by turning it into bytes.
+     *
+     * @param value The int to be encoded
+     * @return The bytes that were got
+     */
+    public byte[] encodeInt(int value) {
+        return new byte[] {
+                (byte) (value >> 24),
+                (byte) (value >> 16),
+                (byte) (value >> 8),
+                (byte) value
+        };
+    }
+
+    /**
      * Encodes a byte[] by prefixing it with its length.
      *
      * @param byteArray The bytes to be encoded
@@ -246,38 +271,41 @@ public abstract class PacketAdapter {
         System.arraycopy(name, 0, bytes, 0, name.length);
         System.arraycopy(value, 0, bytes, name.length, value.length);
         System.arraycopy(isSigned, 0, bytes, name.length + value.length, isSigned.length);
-        System.arraycopy(signature, 0, bytes, name.length + value.length + isSigned.length, signature.length);
+        System.arraycopy(signature, 0, bytes, name.length + value.length + isSigned.length,
+                signature.length);
 
         return bytes;
     }
 
     /**
-     * Encodes a {@link LoginSuccess.Property} array.
+     * Encodes an array of a type with an encoder. It is prefixed by the number of items in the array
      *
-     * @param properties The properties to be encoded
-     * @return The bytes that were got
+     * @param items The items to be encoded
+     * @param encoder The function to encode the items
+     * @return The  bytes that were got
+     * @param <T> The type of the item that's being encoded
      */
-    public byte[] encodePropertyArray(LoginSuccess.Property[] properties) {
+    public <T> byte[] encodeArray(T[] items, Function<T, byte[]> encoder) {
         // We don't know what the full length is yet, so we can't make the final array
-        byte[][] encodedIndividualProperties = new byte[properties.length][];
+        byte[][] encodedIndividualItems = new byte[items.length][];
         int totalLength = 0;
-        for (int i=0; i < properties.length; i++) {
-            byte[] encodedProperty = encodeProperty(properties[i]);
-            encodedIndividualProperties[i] = encodedProperty;
-            totalLength += encodedProperty.length;
+        for (int i=0; i < items.length; i++) {
+            byte[] encodedItem = encoder.apply(items[i]);
+            encodedIndividualItems[i] = encodedItem;
+            totalLength += encodedItem.length;
         }
 
-        byte[] encodedTotalLength = encodeVarInt(totalLength);
-        byte[] encodedProperties = new byte[encodedTotalLength.length + totalLength];
-        System.arraycopy(encodedTotalLength, 0, encodedProperties, 0, encodedTotalLength.length);
+        byte[] encodedLength = encodeVarInt(items.length);
+        byte[] encodedItems = new byte[encodedLength.length + totalLength];
+        System.arraycopy(encodedLength, 0, encodedItems, 0, encodedLength.length);
 
-        int offset = encodedTotalLength.length;
-        for (byte[] encodedProperty : encodedIndividualProperties) {
-            System.arraycopy(encodedProperty, 0, encodedProperties, offset, encodedProperty.length);
-            offset += encodedProperty.length;
+        int offset = encodedLength.length;
+        for (byte[] encodedItem : encodedIndividualItems) {
+            System.arraycopy(encodedItem, 0, encodedItems, offset, encodedItem.length);
+            offset += encodedItem.length;
         }
 
-        return encodedProperties;
+        return encodedItems;
     }
 
     /**
@@ -308,4 +336,319 @@ public abstract class PacketAdapter {
      * @return The encoded packet as a byte[]
      */
     public abstract byte[] encodePacket(ClientboundPacket clientboundPacket);
+
+    /**
+     * Encodes a {@link Identifier} as if it were a string.
+     *
+     * @param identifier The identifier to be encoded
+     * @return The bytes that were got
+     */
+    public byte[] encodeIdentifier(Identifier identifier) {
+        return encodeString(identifier.build());
+    }
+
+    /**
+     * Encodes a {@link Gamemode}.
+     *
+     * @param gamemode The gamemode
+     * @return The bytes that were got
+     */
+    public byte[] encodeGamemode(Gamemode gamemode) {
+        return new byte[]{
+                switch (gamemode) {
+                    case SURVIVAL -> 0;
+                    case CREATIVE -> 1;
+                    case ADVENTURE -> 2;
+                    case SPECTATOR -> 3;
+                }
+        };
+    }
+
+    /**
+     * Encodes a {@link Location} as a long where the first 26 bits are x, the next 26 bits are z, and the next & last
+     * 12 bits are y.
+     *
+     * @param location The location
+     * @return The bytes that were got
+     */
+    public byte[] encodeLocation(Location location) {
+        return encodeLong(
+                ((long) (location.getX() & 0x3FFFFFF) << 38) |
+                ((long) (location.getZ() & 0x3FFFFFF) << 12) |
+                (location.getY() & 0xFFF));
+    }
+
+    /**
+     * Encodes a {@link RegistryCodec} as if it were NBT data.
+     *
+     * @param registryCodec The registry codec
+     * @return The bytes that were got
+     */
+    public byte[] encodeRegistryCodec(RegistryCodec registryCodec) {
+
+        NBTCompound nbtDimensionTypeRegistry = new NBTCompound();
+        nbtDimensionTypeRegistry.put("type", "minecraft:dimension_type");
+
+        NBTList nbtDimensionTypeRegistryEntries = new NBTList(TagType.COMPOUND);
+        for (int i=0; i<registryCodec.getDimensionTypes().length; i++) {
+            NBTCompound nbtDimensionTypeRegistryEntry = new NBTCompound();
+            nbtDimensionTypeRegistryEntry.put("name", registryCodec.getDimensionTypes()[i].getName());
+            nbtDimensionTypeRegistryEntry.put("id", i);
+
+            DimensionTypeRegistryEntryElement dimensionTypeRegistryEntryElement =
+                    registryCodec.getDimensionTypes()[i].getElement();
+            NBTCompound nbtDimensionTypeRegistryEntryElement = new NBTCompound();
+            nbtDimensionTypeRegistryEntryElement.put("piglin_safe",
+                    dimensionTypeRegistryEntryElement.isPiglinSafe());
+            nbtDimensionTypeRegistryEntryElement.put("has_raids", dimensionTypeRegistryEntryElement.hasRaids());
+            nbtDimensionTypeRegistryEntryElement.put("monster_spawn_light_level",
+                    dimensionTypeRegistryEntryElement.getMonsterSpawnLightLevel());
+            nbtDimensionTypeRegistryEntryElement.put("monster_spawn_block_light_limit",
+                    dimensionTypeRegistryEntryElement.getMonsterSpawnBlockLightLimit());
+            nbtDimensionTypeRegistryEntryElement.put("natural", dimensionTypeRegistryEntryElement.isNatural());
+            nbtDimensionTypeRegistryEntryElement.put("ambient_light",
+                    dimensionTypeRegistryEntryElement.hasAmbientLight());
+            if (dimensionTypeRegistryEntryElement.hasFixedTime()) {
+                nbtDimensionTypeRegistryEntryElement.put("fixed_time",
+                        dimensionTypeRegistryEntryElement.getFixedTime());
+            }
+            nbtDimensionTypeRegistryEntryElement.put("infiniburn",
+                    dimensionTypeRegistryEntryElement.getInfiniteBurnTag());
+            nbtDimensionTypeRegistryEntryElement.put("respawn_anchor_works",
+                    dimensionTypeRegistryEntryElement.doRespawnAnchorsWork());
+            nbtDimensionTypeRegistryEntryElement.put("has_skylight",
+                    dimensionTypeRegistryEntryElement.hasSkylight());
+            nbtDimensionTypeRegistryEntryElement.put("bed_works", dimensionTypeRegistryEntryElement.bedWorks());
+            nbtDimensionTypeRegistryEntryElement.put("effects", dimensionTypeRegistryEntryElement.getEffects());
+            nbtDimensionTypeRegistryEntryElement.put("min_y", dimensionTypeRegistryEntryElement.getMinY());
+            nbtDimensionTypeRegistryEntryElement.put("height",
+                    dimensionTypeRegistryEntryElement.getWorldHeight());
+            nbtDimensionTypeRegistryEntryElement.put("logical_height",
+                    dimensionTypeRegistryEntryElement.getLogicalHeight());
+            nbtDimensionTypeRegistryEntryElement.put("coordinate_scale",
+                    dimensionTypeRegistryEntryElement.getCoordinateScale());
+            nbtDimensionTypeRegistryEntryElement.put("ultrawarm",
+                    dimensionTypeRegistryEntryElement.isUltrawarm());
+            nbtDimensionTypeRegistryEntryElement.put("has_ceiling",
+                    dimensionTypeRegistryEntryElement.hasCeiling());
+
+            nbtDimensionTypeRegistryEntry.put("element", nbtDimensionTypeRegistryEntryElement);
+            nbtDimensionTypeRegistryEntries.add(nbtDimensionTypeRegistryEntry);
+        }
+        nbtDimensionTypeRegistry.put("value", nbtDimensionTypeRegistryEntries);
+
+
+        NBTCompound nbtBiomeRegistry = new NBTCompound();
+        nbtBiomeRegistry.put("type", "minecraft:worldgen/biome");
+        NBTList nbtBiomeRegistryEntries = new NBTList(TagType.COMPOUND);
+        for (int i=0; i<registryCodec.getBiomes().length; i++) {
+            NBTCompound nbtBiomeRegistryEntry = new NBTCompound();
+            nbtBiomeRegistryEntry.put("name", registryCodec.getDimensionTypes()[i].getName());
+            nbtBiomeRegistryEntry.put("id", i);
+
+            BiomeRegistryEntryElement biomeRegistryEntryElement =
+                    registryCodec.getBiomes()[i].getElement();
+            NBTCompound nbtBiomeRegistryEntryElement = new NBTCompound();
+            nbtBiomeRegistryEntryElement.put("precipitation",
+                    biomeRegistryEntryElement.getPrecipitationType().getName());
+            if (biomeRegistryEntryElement.hasDepthFactor()) {
+                nbtBiomeRegistryEntryElement.put("depth", biomeRegistryEntryElement.getDepthFactor());
+            }
+            nbtBiomeRegistryEntryElement.put("temperature", biomeRegistryEntryElement.getTemperature());
+            if (biomeRegistryEntryElement.hasScale()) {
+                nbtBiomeRegistryEntryElement.put("scale", biomeRegistryEntryElement.getScale());
+            }
+            nbtBiomeRegistryEntryElement.put("downfall", biomeRegistryEntryElement.getDownfall());
+            if (biomeRegistryEntryElement.hasCategory()) {
+                nbtBiomeRegistryEntryElement.put("category", biomeRegistryEntryElement.getCategory());
+            }
+            if (biomeRegistryEntryElement.hasTemperatureModifier()) {
+                nbtBiomeRegistryEntryElement.put("temperature_modifier",
+                        biomeRegistryEntryElement.getTemperatureModifier());
+            }
+
+            NBTList nbtBiomeRegistryEntryElementEffects = new NBTList(TagType.COMPOUND);
+            for (int i2=0; i2<biomeRegistryEntryElement.getEffects().length; i2++) {
+                BiomeRegistryEntryElementEffect biomeRegistryEntryElementEffect =
+                        biomeRegistryEntryElement.getEffects()[i2];
+                NBTCompound nbtBiomeRegistryEntryElementEffect = new NBTCompound();
+
+                nbtBiomeRegistryEntryElementEffect.put("sky_color",
+                        biomeRegistryEntryElementEffect.getSkyColor());
+                nbtBiomeRegistryEntryElementEffect.put("water_fog_color",
+                        biomeRegistryEntryElementEffect.getWaterFogColor());
+                nbtBiomeRegistryEntryElementEffect.put("fog_color",
+                        biomeRegistryEntryElementEffect.getFogColor());
+                nbtBiomeRegistryEntryElementEffect.put("water_color",
+                        biomeRegistryEntryElementEffect.getWaterColor());
+                if (biomeRegistryEntryElementEffect.hasFoliageColor()) {
+                    nbtBiomeRegistryEntryElementEffect.put("foliage_color",
+                            biomeRegistryEntryElementEffect.getFoliageColor());
+                }
+                if (biomeRegistryEntryElementEffect.hasGrassColor()) {
+                    nbtBiomeRegistryEntryElementEffect.put("grass_color",
+                            biomeRegistryEntryElementEffect.getGrassColor());
+                }
+                if (biomeRegistryEntryElementEffect.hasGrassColorModifier()) {
+                    nbtBiomeRegistryEntryElementEffect.put("grass_color_modifier",
+                            biomeRegistryEntryElementEffect.getGrassColorModifier());
+                }
+
+                if (biomeRegistryEntryElementEffect.hasMusic()) {
+                    BiomeRegistryEntryElementEffectMusic biomeRegistryEntryElementEffectMusic =
+                            biomeRegistryEntryElementEffect.getMusic();
+                    NBTCompound nbtBiomeRegistryEntryElementEffectMusic = new NBTCompound();
+                    nbtBiomeRegistryEntryElementEffectMusic.put("replace_current_music",
+                            (byte) (biomeRegistryEntryElementEffectMusic.replacesCurrentMusic() ? 1 : 0));
+                    nbtBiomeRegistryEntryElementEffectMusic.put("sound",
+                            biomeRegistryEntryElementEffectMusic.getSound());
+                    nbtBiomeRegistryEntryElementEffectMusic.put("max_delay",
+                            biomeRegistryEntryElementEffectMusic.getMaxDelay());
+                    nbtBiomeRegistryEntryElementEffectMusic.put("min_delay",
+                            biomeRegistryEntryElementEffectMusic.getMinDelay());
+
+                    nbtBiomeRegistryEntryElementEffect.put("music", nbtBiomeRegistryEntryElementEffectMusic);
+                }
+                if (biomeRegistryEntryElementEffect.hasAmbientSound()) {
+                    nbtBiomeRegistryEntryElementEffect.put("ambient_sound",
+                            biomeRegistryEntryElementEffect.getAmbientSound());
+                }
+                if (biomeRegistryEntryElementEffect.hasAdditionsSound()) {
+                    BiomeRegistryEntryElementEffectAdditionsSound biomeRegistryEntryElementEffectAdditionsSound =
+                            biomeRegistryEntryElementEffect.getAdditionsSound();
+                    NBTCompound nbtBiomeRegistryEntryElementEffectAdditionsSound = new NBTCompound();
+                    nbtBiomeRegistryEntryElementEffectAdditionsSound.put("sound",
+                            biomeRegistryEntryElementEffectAdditionsSound.getSound());
+                    nbtBiomeRegistryEntryElementEffectAdditionsSound.put("tick_chance",
+                            biomeRegistryEntryElementEffectAdditionsSound.getTickChance());
+
+                    nbtBiomeRegistryEntryElementEffect.put("additions_sound",
+                            nbtBiomeRegistryEntryElementEffectAdditionsSound);
+                }
+                if (biomeRegistryEntryElementEffect.hasMoodSound()) {
+                    BiomeRegistryEntryElementEffectMoodSound biomeRegistryEntryElementEffectMoodSound =
+                            biomeRegistryEntryElementEffect.getMoodSound();
+                    NBTCompound nbtBiomeRegistryEntryElementEffectMoodSound = new NBTCompound();
+                    nbtBiomeRegistryEntryElementEffectMoodSound.put("sound",
+                            biomeRegistryEntryElementEffectMoodSound.getSound());
+                    nbtBiomeRegistryEntryElementEffectMoodSound.put("tick_delay",
+                            biomeRegistryEntryElementEffectMoodSound.getTickDelay());
+                    nbtBiomeRegistryEntryElementEffectMoodSound.put("offset",
+                            biomeRegistryEntryElementEffectMoodSound.getOffset());
+                    nbtBiomeRegistryEntryElementEffectMoodSound.put("block_search_extent",
+                            biomeRegistryEntryElementEffectMoodSound.getBlockSearchExtent());
+
+                    nbtBiomeRegistryEntryElementEffect.put("mood_sound",
+                            nbtBiomeRegistryEntryElementEffectMoodSound);
+                }
+                if (biomeRegistryEntryElementEffect.hasParticle()) {
+                    BiomeRegistryEntryElementEffectParticle biomeRegistryEntryElementEffectParticle =
+                            biomeRegistryEntryElementEffect.getParticle();
+                    NBTCompound nbtBiomeRegistryEntryElementEffectParticle = new NBTCompound();
+                    nbtBiomeRegistryEntryElementEffectParticle.put("probability",
+                            biomeRegistryEntryElementEffectParticle.getProbability());
+                    nbtBiomeRegistryEntryElementEffectParticle.put("options", new NBTCompound() {{
+                        putAll(biomeRegistryEntryElementEffectParticle.getOptions());
+                    }});
+
+                    nbtBiomeRegistryEntryElementEffect.put("particle", nbtBiomeRegistryEntryElementEffectParticle);
+                }
+
+                nbtBiomeRegistryEntryElementEffects.add(nbtBiomeRegistryEntryElementEffect);
+            }
+
+            nbtBiomeRegistryEntryElement.put("particle", nbtBiomeRegistryEntryElementEffects);
+            nbtBiomeRegistryEntry.put("element", nbtBiomeRegistryEntryElement);
+            nbtBiomeRegistryEntries.add(nbtBiomeRegistryEntry);
+        }
+        nbtBiomeRegistry.put("value", nbtBiomeRegistryEntries);
+
+
+        NBTCompound nbtChatRegistry = new NBTCompound();
+        nbtChatRegistry.put("type", "minecraft:chat_type");
+        NBTList nbtChatRegistryEntries = new NBTList(TagType.COMPOUND);
+        for (int i=0; i<registryCodec.getChatTypes().length; i++) {
+            ChatRegistryEntry chatRegistryEntry = registryCodec.getChatTypes()[i];
+            NBTCompound nbtChatTypeRegistryEntry = new NBTCompound();
+            nbtChatTypeRegistryEntry.put("name", chatRegistryEntry.getName());
+            nbtChatTypeRegistryEntry.put("id", chatRegistryEntry.getId());
+
+            ChatRegistryEntryElement chatRegistryEntryElement = chatRegistryEntry.getElement();
+            NBTCompound nbtChatTypeRegistryEntryElement = new NBTCompound();
+
+            if (chatRegistryEntryElement.hasChat()) {
+                ChatRegistryEntryElementChat chatRegistryEntryElementChat = chatRegistryEntryElement.getChat();
+                NBTCompound nbtChatTypeRegistryEntryElementChat = new NBTCompound();
+                if (chatRegistryEntryElementChat.hasDecorations()) {
+                    ChatRegistryEntryElementChatDecorations chatRegistryEntryElementChatDecorations =
+                            chatRegistryEntryElementChat.getDecorations();
+                    NBTCompound nbtChatTypeRegistryEntryElementChatDecorations = new NBTCompound();
+                    nbtChatTypeRegistryEntryElementChatDecorations.put("parameters",
+                            new NBTList(TagType.STRING) {{
+                                addAll(Arrays.asList(chatRegistryEntryElementChatDecorations.getParameters()));
+                    }});
+                    nbtChatTypeRegistryEntryElementChatDecorations.put("translation_key",
+                            chatRegistryEntryElementChatDecorations.getTranslationKey());
+
+                    ChatRegistryEntryElementChatDecorationsStyle chatRegistryEntryElementChatDecorationsStyle =
+                            chatRegistryEntryElementChatDecorations.getStyle();
+                    NBTCompound nbtChatTypeRegistryEntryElementChatDecorationsStyle = new NBTCompound();
+                    nbtChatTypeRegistryEntryElementChatDecorations.put("style",
+                            nbtChatTypeRegistryEntryElementChatDecorationsStyle);
+
+                    nbtChatTypeRegistryEntryElementChat.put("decorations", nbtChatTypeRegistryEntryElementChatDecorations);
+                }
+                nbtChatTypeRegistryEntryElement.put("chat", nbtChatTypeRegistryEntryElementChat);
+            }
+            if (chatRegistryEntryElement.hasNarration()) {
+                ChatRegistryEntryElementNarration chatRegistryEntryElementNarration = chatRegistryEntryElement.getNarration();
+                NBTCompound nbtChatTypeRegistryEntryElementNarration = new NBTCompound();
+                if (chatRegistryEntryElementNarration.hasDecorations()) {
+                    ChatRegistryEntryElementNarrationDecorations chatRegistryEntryElementNarrationDecorations =
+                            chatRegistryEntryElementNarration.getDecorations();
+                    NBTCompound nbtChatTypeRegistryEntryElementNarrationDecorations = new NBTCompound();
+                    nbtChatTypeRegistryEntryElementNarrationDecorations.put("parameters",
+                            new NBTList(TagType.STRING) {{
+                                addAll(Arrays.asList(chatRegistryEntryElementNarrationDecorations.getParameters()));
+                            }});
+                    nbtChatTypeRegistryEntryElementNarrationDecorations.put("translation_key",
+                            chatRegistryEntryElementNarrationDecorations.getTranslationKey());
+
+                    ChatRegistryEntryElementNarrationDecorationsStyle chatRegistryEntryElementNarrationDecorationsStyle =
+                            chatRegistryEntryElementNarrationDecorations.getStyle();
+                    NBTCompound nbtChatTypeRegistryEntryElementNarrationDecorationsStyle = new NBTCompound();
+                    nbtChatTypeRegistryEntryElementNarrationDecorations.put("style",
+                            nbtChatTypeRegistryEntryElementNarrationDecorationsStyle);
+
+                    nbtChatTypeRegistryEntryElementNarration.put("decorations", nbtChatTypeRegistryEntryElementNarrationDecorations);
+                }
+                nbtChatTypeRegistryEntryElement.put("narration", nbtChatTypeRegistryEntryElementNarration);
+            }
+            if (chatRegistryEntryElement.hasOverlay()) {
+                ChatRegistryEntryElementOverlay chatRegistryEntryElementOverlay = chatRegistryEntryElement.getOverlay();
+                NBTCompound nbtChatRegistryEntryElementOverlay = new NBTCompound();
+
+                nbtChatTypeRegistryEntryElement.put("overlay", nbtChatRegistryEntryElementOverlay);
+            }
+            nbtChatTypeRegistryEntry.put("element", nbtChatTypeRegistryEntryElement);
+            nbtChatRegistryEntries.add(nbtChatTypeRegistryEntry);
+        }
+        nbtChatRegistry.put("value", nbtChatRegistryEntries);
+
+
+        NBTCompound nbtCompound = new NBTCompound();
+        nbtCompound.put("minecraft:dimension_type", nbtDimensionTypeRegistry);
+        nbtCompound.put("minecraft:worldgen/biome", nbtBiomeRegistry);
+        nbtCompound.put("minecraft:chat_type", nbtChatRegistry);
+
+
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            NBTWriter.write(nbtCompound, byteArrayOutputStream, "registryCodec", false);
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e); // Should be impossible
+        }
+    }
 }
