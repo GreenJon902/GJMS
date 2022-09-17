@@ -1,9 +1,6 @@
 package com.greenjon902.gjms.connection;
 
-import com.greenjon902.gjms.common.Connection;
-import com.greenjon902.gjms.common.Gamemode;
-import com.greenjon902.gjms.common.Identifier;
-import com.greenjon902.gjms.common.Location;
+import com.greenjon902.gjms.common.*;
 import com.greenjon902.gjms.common.RegistryCodec.*;
 import com.greenjon902.gjms.connection.prePlay.packetAdapter.login.packet.clientbound.LoginSuccess;
 import me.nullicorn.nedit.NBTWriter;
@@ -360,6 +357,23 @@ public abstract class PacketAdapter {
                     case CREATIVE -> 1;
                     case ADVENTURE -> 2;
                     case SPECTATOR -> 3;
+                }
+        };
+    }
+
+    /**
+     * Encodes a {@link com.greenjon902.gjms.common.Difficulty}.
+     *
+     * @param difficulty The difficulty level
+     * @return The bytes that were got
+     */
+    public byte[] encodeDifficulty(Difficulty difficulty) {
+        return new byte[]{
+                switch (difficulty) {
+                    case PEACEFUL -> 0;
+                    case EASY -> 1;
+                    case NORMAL -> 2;
+                    case HARD -> 3;
                 }
         };
     }

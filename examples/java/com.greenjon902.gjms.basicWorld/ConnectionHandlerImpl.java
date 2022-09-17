@@ -2,6 +2,7 @@ package com.greenjon902.gjms.basicWorld;
 
 import com.greenjon902.gjms.common.*;
 import com.greenjon902.gjms.common.RegistryCodec.RegistryCodec;
+import com.greenjon902.gjms.connection.play.packetAdapter.packet.clientbound.ChangeDifficulty;
 import com.greenjon902.gjms.connection.play.packetAdapter.packet.clientbound.Login;
 import com.greenjon902.gjms.connection.prePlay.PrePlayConnection;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +46,19 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
             connection.send(loginPacket);
         } catch (IOException e) {
             System.err.println("Failed to send Login (Play) to " + connection + "\npacket=" + loginPacket + "\n\n");
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                System.err.println(stackTraceElement.toString());
+            }
+        }
+
+        ChangeDifficulty changeDifficulty = new ChangeDifficulty(
+                Difficulty.PEACEFUL,
+                false
+        );
+        try {
+            connection.send(changeDifficulty);
+        } catch (IOException e) {
+            System.err.println("Failed to send ChangeDifficulty to " + connection + "\npacket=" + changeDifficulty + "\n\n");
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 System.err.println(stackTraceElement.toString());
             }

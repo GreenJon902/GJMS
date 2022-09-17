@@ -4,6 +4,7 @@ import com.greenjon902.gjms.common.RegistryCodec.RegistryCodec;
 import com.greenjon902.gjms.connection.ClientboundPacket;
 import com.greenjon902.gjms.connection.PacketAdapter;
 import com.greenjon902.gjms.connection.ServerboundPacket;
+import com.greenjon902.gjms.connection.play.packetAdapter.packet.clientbound.ChangeDifficulty;
 import com.greenjon902.gjms.connection.play.packetAdapter.packet.clientbound.Login;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class PacketAdapter760 extends PacketAdapter {
                         deathDimensionName.length, deathLocation.length);
             } else {
                 deathLocationInfo = encodeBoolean(false); // there is no death location info and the first field
-                                                                 // is hasDeathLocation so set to false here
+                // is hasDeathLocation so set to false here
             }
 
             content = new byte[entityId.length + isHardcore.length + previousGamemode.length + gamemode.length +
@@ -95,6 +96,15 @@ public class PacketAdapter760 extends PacketAdapter {
             System.arraycopy(isFlat, 0, content, offset, isFlat.length);
             offset += isFlat.length;
             System.arraycopy(deathLocationInfo, 0, content, offset, deathLocationInfo.length);
+
+
+        } else if (packet instanceof ChangeDifficulty changeDifficulty) {
+            byte[] difficulty = encodeDifficulty(changeDifficulty.difficulty);
+            byte[] isDifficultyLocked = encodeBoolean(changeDifficulty.isDifficultyLocked);
+
+            content = new byte[difficulty.length + isDifficultyLocked.length];
+            System.arraycopy(difficulty, 0, content, 0, difficulty.length);
+            System.arraycopy(isDifficultyLocked, 0, content, difficulty.length, isDifficultyLocked.length);
 
         } else {
             throw new RuntimeException("PacketAdapter760 cannot encode packet of type " +
